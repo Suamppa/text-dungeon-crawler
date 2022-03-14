@@ -14,19 +14,26 @@ void shuffleVector(vector<T> * contents) {
 }
 
 template <typename T>
-ShuffleBag<T>::ShuffleBag(int initCapacity)
+ShuffleBag<T>::ShuffleBag(vector<T> base)
 {
-    data.resize(initCapacity);
+    // data.resize(initCapacity);
+    // capacity = data.capacity();
+    
     currentPosition = -1;
-    capacity = data.capacity();
+    data = base;
     size = data.size();
 }
 
 template <typename T>
 void ShuffleBag<T>::add(T item, int amount) {
-    for (int i = 0; i < amount; i++) {
+    if (amount != 1) {
+        for (int i = 0; i < amount; i++) {
+            data.push_back(item);
+        }
+    } else {
         data.push_back(item);
     }
+    size = data.size();
     currentPosition = size - 1;
 }
 
@@ -43,4 +50,10 @@ T ShuffleBag<T>::next() {
     data[currentPosition] = currentItem;
     currentPosition--;
     return currentItem;
+}
+
+template <typename T>
+void ShuffleBag<T>::empty() {
+    data.clear();
+    size = data.size();
 }

@@ -19,12 +19,13 @@ private:
     vector<T> data;
     T currentItem;
     int currentPosition;
-    int capacity;
+    // int capacity;
 public:
     int size;
-    ShuffleBag(int);
-    void add(T, int);
+    ShuffleBag(vector<T> = vector<T>());
+    void add(T, int=1);
     T next();
+    void empty();
 };
 
 #include "RNG.cpp"

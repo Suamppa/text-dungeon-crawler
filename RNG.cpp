@@ -38,7 +38,7 @@ void ShuffleBag<T>::add(T item, int amount) {
 }
 
 template <typename T>
-T ShuffleBag<T>::next() {
+T ShuffleBag<T>::draw() {
     if (currentPosition < 1) {
         currentPosition = size - 1;
         currentItem = data[0];

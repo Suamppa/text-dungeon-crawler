@@ -24,7 +24,7 @@ public:
     int size;
     ShuffleBag(vector<T> = vector<T>());
     void add(T, int=1);
-    T next();
+    T draw();
     void empty();
 };
 

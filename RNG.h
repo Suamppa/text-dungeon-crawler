@@ -28,6 +28,6 @@ public:
     void empty();
 };
 
-#include "RNG.cpp"
+// #include "RNG.cpp"
 
 #endif

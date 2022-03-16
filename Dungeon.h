@@ -14,7 +14,7 @@ public:
     Player player;
     Room rooms[4];
     Dungeon(Player);
-    void generateDungeon(int, int); // MATRIISILUONTI?
+    void generateDungeon(int, int); // to be implemented as procedural generator
     int runDungeon();
     void enterRoom(Room *);
     char handleInput(int, string[], vector<char>, bool=true, bool=true);

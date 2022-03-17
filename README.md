@@ -2,6 +2,7 @@
 Practice project based on and extended from the project created during the Zenva Academy course "Learn C++ by Making a Text-Based RPG [2020]".
 
 This branch is in development and contains prototyping for a proper dungeon generation and navigation functionalities.
+Additionally, proper tasks.json was created for this branch.
 
 Some planned features:
 - Proper procedural room and dungeon generation (in dev)

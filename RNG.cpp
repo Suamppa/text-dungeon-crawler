@@ -4,6 +4,7 @@ random_device randDev;
 mt19937 generator(randDev());
 
 int rng(int rangeFrom, int rangeTo) {
+    // rangeFrom and rangeTo are included in the possible result
     uniform_int_distribution<int> distr(rangeFrom, rangeTo);
     return distr(generator);
 }
@@ -19,9 +20,9 @@ ShuffleBag<T>::ShuffleBag(vector<T> base)
     // data.resize(initCapacity);
     // capacity = data.capacity();
     
-    currentPosition = -1;
     data = base;
     size = data.size();
+    currentPosition = size - 1;
 }
 
 template <typename T>

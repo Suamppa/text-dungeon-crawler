@@ -4,7 +4,7 @@
 		{
 			"type": "cppbuild",
 			"label": "Build with GCC 11.2.0",
-			"command": "C:/Program Files/mingw64/bin/g++.exe",
+			"command": "C:/mingw64/bin/g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
@@ -14,18 +14,18 @@
 				"${fileDirname}\\textdungeon.exe"
 			],
 			"options": {
-				"cwd": "C:/Program Files/mingw64/bin"
+				"cwd": "C:/mingw64/bin"
 			},
 			"problemMatcher": [
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "compiler: \"C:/Program Files/mingw64/bin/g++.exe\""
+			"detail": "compiler: \"C:/mingw64/bin/g++.exe\""
 		},
 		{
 			"type": "cppbuild",
 			"label": "Build with Clang 13.0.0",
-			"command": "C:\\Program Files\\mingw64\\bin\\clang++.exe",
+			"command": "C:\\mingw64\\bin\\clang++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
@@ -41,7 +41,7 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "compiler: \"C:\\Program Files\\mingw64\\bin\\clang++.exe\""
+			"detail": "compiler: \"C:\\mingw64\\bin\\clang++.exe\""
 		}
 	]
 }

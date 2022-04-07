@@ -13,6 +13,7 @@ class Dungeon
 public:
     Player player;
     Room rooms[4];
+    vector<vector<bool>> dungeon;
     Dungeon(Player);
     void generateDungeon(int, int); // to be implemented as procedural generator
     int runDungeon();

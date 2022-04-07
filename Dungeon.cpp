@@ -18,6 +18,38 @@ Dungeon::Dungeon(Player p)
     }
 } */
 
+void Dungeon::generateDungeon(int gridX, int gridY) {
+    // 1. Create starting room
+    // 2. Pick an adjacent space to handle next
+    // 3. Check if the space has a room
+    // 4. Roll for room generation in that space if empty
+    // 5. Repeat steps 2-4 until max number of rooms is reached
+
+    // Create a 2D vector of the dungeon level
+    vector<vector<bool>> dungeon(gridY, vector<bool>(gridX, 0));
+    // Choose the index of the starting room
+    int startY = rng(0, gridY-1);
+    int startX = rng(0, gridX-1);
+    // call first room constructor
+
+    // Randomly pick an adjacent space
+    ShuffleBag<int> shuffleBag({0, 1});
+    int y, x;
+    y = shuffleBag.draw();
+    x = shuffleBag.draw();
+    // Randomise the 1's sign
+    shuffleBag.empty();
+    shuffleBag.add({-1, 1});
+    y *= shuffleBag.draw();
+    x *= shuffleBag.draw();
+
+    for (int i = 0; i < gridY; i++) {
+        for (int j = 0; j < gridX; j++) {
+            // create rooms
+        }
+    }
+}
+
 char Dungeon::handleInput(int numActions, string actions[], vector<char> legalInputs, bool allowStats, bool allowInventory) {
     while (true) {
         string input;

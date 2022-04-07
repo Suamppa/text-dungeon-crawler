@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <random>
 #include <vector>
+#include <deque>
+#include <initializer_list>
 
 #ifndef RNG_H
 #define RNG_H
@@ -12,19 +14,23 @@ int rng(int, int);
 template <typename T>
 void shuffleVector(vector<T> *);
 
+// ShuffleBag based on the article "Shuffle Bags: Making Random() Feel More Random"
+// by Jon Davis, October 24, 2012:
+// https://gamedevelopment.tutsplus.com/tutorials/shuffle-bags-making-random-feel-more-random--gamedev-1249
 template <typename T>
 class ShuffleBag
 {
 private:
-    vector<T> data;
+    deque<T> data;
     T currentItem;
     int currentPosition;
     // int capacity;
 public:
     int size;
-    ShuffleBag(vector<T> = vector<T>());
+    ShuffleBag(initializer_list<T> = initializer_list<T>());
     void add(T, int=1);
-    T draw();
+    void add(initializer_list<T>, int=1);
+    T draw(bool=false);
     void empty();
 };
 

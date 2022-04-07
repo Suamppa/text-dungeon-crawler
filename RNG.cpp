@@ -15,7 +15,7 @@ void shuffleVector(vector<T> * contents) {
 }
 
 template <typename T>
-ShuffleBag<T>::ShuffleBag(vector<T> base)
+ShuffleBag<T>::ShuffleBag(initializer_list<T> base)
 {
     // data.resize(initCapacity);
     // capacity = data.capacity();
@@ -27,24 +27,60 @@ ShuffleBag<T>::ShuffleBag(vector<T> base)
 
 template <typename T>
 void ShuffleBag<T>::add(T item, int amount) {
-    if (amount != 1) {
+    if (amount > 1) {
         for (int i = 0; i < amount; i++) {
-            data.push_back(item);
+            data.push_front(item);
+            currentPosition++;
         }
     } else {
-        data.push_back(item);
+        data.push_front(item);
+        currentPosition++;
     }
     size = data.size();
-    currentPosition = size - 1;
 }
 
 template <typename T>
-T ShuffleBag<T>::draw() {
-    if (currentPosition < 1) {
-        currentPosition = size - 1;
-        currentItem = data[0];
-        return currentItem;
+void ShuffleBag<T>::add(initializer_list<T> items, int amount) {
+    // for (int i = 0; i < items.size(); i++) {
+    for (T item: items) {
+        if (amount > 1) {
+            for (int j = 0; j < amount; j++) {
+                data.push_front(item);
+                currentPosition++;
+            }
+        } else {
+            data.push_front(item);
+            currentPosition++;
+        }
     }
+    size = data.size();
+}
+
+template <typename T>
+T ShuffleBag<T>::draw(bool debug) {
+    // Logic to start over.
+    // This allows for adding new items without having to shuffle previously drawn ones back in.
+    if (currentPosition < 0) {
+        if (size < 1) {
+            currentItem = data[0];
+            return currentItem; 
+        }
+        currentPosition = size - 1;
+    }
+
+    // Print for testing
+    if (debug) {
+        cout << "\nPossible values:";
+        if (currentPosition == 0) {
+            cout << " " << data[0];
+        } else {
+            for (int i = 0; i < currentPosition+1; i++) {
+            cout << " " << data[i];
+            }
+        }
+        cout << endl << "Result: ";
+    }
+
     int pos = rng(0, currentPosition);
     currentItem = data[pos];
     data[pos] = data[currentPosition];

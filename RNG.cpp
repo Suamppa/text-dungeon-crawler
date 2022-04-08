@@ -93,4 +93,5 @@ template <typename T>
 void ShuffleBag<T>::empty() {
     data.clear();
     size = data.size();
+    currentPosition = size - 1;
 }

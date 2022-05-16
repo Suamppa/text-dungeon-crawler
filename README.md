@@ -8,3 +8,6 @@ Some planned features:
 - Proper inventory and equip systems
 - More enemies
 - Loot system, removal of enemy-or-chest exclusivity
+
+# Compiling
+For compiling I recommend using C++20 or newer, but some versions may still compile with older standards.

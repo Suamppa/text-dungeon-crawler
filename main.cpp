@@ -77,7 +77,7 @@ int main()
 
         int result = dungeon.runDungeon();
         if (result == 0) {
-            cout << "Goodbye!\n";
+            cout << "Thank you for playing!\n";
             break;
         }
     }

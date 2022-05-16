@@ -1,4 +1,3 @@
-// #include <cmath>
 #include "Player.h"
 
 Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d): GameCharacter(n, h, mina, maxa, d, cxp)
@@ -35,8 +34,10 @@ void Player::gainXp(int amount) {
 void Player::levelUp(int oxp) {
     ++level;
     currentXp = oxp;
-    maxXp += 50;
-    increaseStats(10, 5, 5, 5);
+    if (level > 8) {
+        maxXp = (400 / 5 * pow(level, 3)) / 100;
+    } else maxXp += 50;
+    increaseStats(5, 1, 1, 1);
     cout << "Level up! You are now level " << level << ".\n";
 }
 

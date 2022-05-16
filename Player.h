@@ -1,4 +1,5 @@
 #include "Room.h"
+#include <cmath>
 
 #ifndef PLAYER_H
 #define PLAYER_H

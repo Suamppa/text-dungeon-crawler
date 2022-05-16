@@ -396,10 +396,10 @@ void Dungeon::handleFightActions(GameCharacter * enemy) {
 
 void Dungeon::handleRoomWithEnemy(Room * room) {
     GameCharacter enemy = room->enemies.front();
-    cout << "You enter the room and see a " << enemy.name << ".\n";
+    cout << "You see a " << enemy.name << ".\n";
     string actions[] = {
         "1. Fight the " + enemy.name,
-        "2. Go back to the previous room"
+        "2. Retreat to the previous room"
     };
     vector<char> options;
     options.insert(options.end(), {'1', '2'});
@@ -417,6 +417,7 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
             handleFightActions(&enemy);
             return;
         } else if (selection == '2') {
+            cout << "You make a hasty retreat.\n";
             player.changeRooms(player.previousRoom);
             enterRoom(player.currentRoom);
             return;
@@ -438,7 +439,7 @@ void Dungeon::handleLootActions(Room * room) {
 }
 
 void Dungeon::handleRoomWithChest(Room * room) {
-    cout << "You enter the room and see a large chest in the middle.\n";
+    cout << "You see a large chest in the middle of the room.\n";
     string actions[] = {
         "1. Loot the chest",
         "2. Move to another room"
@@ -468,7 +469,7 @@ void Dungeon::handleRoomWithChest(Room * room) {
 }
 
 void Dungeon::handleEmptyRoom(Room * room) {
-    cout << "You enter the room but it is empty.\n";
+    cout << "This room seems to be empty.\n";
     string actions[] = {
         "1. Move to another room"
     };
@@ -532,6 +533,7 @@ void Dungeon::handleMovementActions(Room * room) {
             int y = room->y + movements[i][0];
             int x = room->x + movements[i][1];
             player.changeRooms(&rooms[y][x]);
+            cout << "You head " << actions[i].substr(5) << ".\n";
             return;
         }
     }

@@ -16,7 +16,7 @@ public:
     vector<vector<Room>> rooms;
     // Grid representing accessible rooms
     vector<vector<bool>> hasRoom;
-    int numRooms, startY, startX;
+    int numRooms, startY, startX, depth;
     Dungeon(Player);
     // Checks if the argument 2D vector's index at (y, x) is reachable and returns a corresponding boolean value
     template <typename T>
@@ -37,11 +37,12 @@ public:
     void handleEmptyRoom(Room *);
     void handleRoomWithChest(Room *);
     void handleRoomWithEnemy(Room *);
+    void handleExitRoom(Room *);
     void handleLootActions(Room *);
     void handleFightActions(GameCharacter *);
     void handleMovementActions(Room *);
     // void printActions(int, string[], bool=true, bool=true);
-    int performEndGameLogic();
+    bool performEndGameLogic();
 };
 
 #endif

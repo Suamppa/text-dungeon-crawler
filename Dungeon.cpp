@@ -3,6 +3,7 @@
 Dungeon::Dungeon(Player p)
 {
     player = p;
+    depth = 0;
 }
 
 /* void Dungeon::printActions(int numActions, string actions[], bool allowStats, bool allowInventory) {
@@ -90,6 +91,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     // 5. Repeat steps 2-4 up to until max number of rooms is reached
 
     cout << "Starting dungeon creation..." << endl;
+    ++depth;
     int gridSize = gridX * gridY;
     numRooms = 0;
     // minRooms and maxRooms are the minimum and maximum number of rooms *allowed*,
@@ -107,6 +109,8 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     startY = indexY;
     startX = indexX;
     addRoom(startY, startX, false);
+    player.currentRoom = &rooms[startY][startX];
+    player.previousRoom = &rooms[startY][startX];
     cout << "First room created" << endl;
     
     // Enemy creation and selection can be made fancier, this is just a mockup
@@ -468,6 +472,59 @@ void Dungeon::handleRoomWithChest(Room * room) {
     }
 }
 
+void Dungeon::handleExitRoom(Room * room) {
+    cout << "There's a set of stairs leading deeper downwards.\n";
+    string actions[] = {
+        "1. Descend",
+        "2. Move to another room"
+    };
+    vector<char> options;
+    options.insert(options.end(), {'1', '2'});
+    int numActions = options.size();
+    while(true) {
+        char selection;
+        selection = handleInput(numActions, actions, options);
+        if (selection == 's') {
+            player.printStats();
+            continue;
+        } else if (selection == 'i') {
+            player.printInventory();
+            continue;
+        } else if (selection == '1') {
+            int width, height, minRooms, maxRooms;
+            int modifier = depth + player.level;
+            width = rng(modifier + 2, modifier + 6);
+            height = rng(modifier + 2, modifier + 6);
+            minRooms = width * height / (modifier * 2);
+            maxRooms = width * height / modifier;
+
+            generateDungeon(width, height, minRooms, maxRooms);
+
+            // Print the room map for testing
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (i == startY && j == startX) {
+                        cout << "[" << hasRoom[i][j] << "]";
+                        continue;
+                    }
+                    if (startX == 0 && j == 0) cout << " ";
+                    cout << hasRoom[i][j];
+                    if (!(i == startY && j == startX - 1)) cout << " ";
+                }
+                cout << endl;
+            }
+            
+            cout << "You descend deeper into the dungeon.\n";
+            return;
+        } else if (selection == '2') {
+            handleMovementActions(player.currentRoom);
+            return;
+        } else {
+            cout << "Invalid choice.\n";
+        }
+    }
+}
+
 void Dungeon::handleEmptyRoom(Room * room) {
     cout << "This room seems to be empty.\n";
     string actions[] = {
@@ -501,6 +558,8 @@ void Dungeon::enterRoom(Room * room) {
     } else if (room->items.size() != 0) {
         // handle room with chest
         handleRoomWithChest(room);
+    } else if (room->isExit) {
+        handleExitRoom(room);
     } else {
         // handle empty room
         handleEmptyRoom(room);
@@ -606,7 +665,7 @@ void Dungeon::handleMovementActions(Room * room) {
 }
  */
 
-int Dungeon::performEndGameLogic() {
+bool Dungeon::performEndGameLogic() {
     string actions[] = {"1. Yes", "2. No"};
     while(true) {
         vector<char> options;
@@ -615,9 +674,9 @@ int Dungeon::performEndGameLogic() {
         char selection;
         selection = handleInput(numActions, actions, options, false, false);
         if (selection == '1') {
-            return 1;
+            return true;
         } else if (selection == '2') {
-            return 0;
+            return false;
         } else {
             cout << "Invalid choice.\n";
         }
@@ -625,9 +684,29 @@ int Dungeon::performEndGameLogic() {
 }
 
 int Dungeon::runDungeon() {
+    int width, height, minRooms, maxRooms;
+    width = rng(5, 9);
+    height = rng(5, 9);
+    minRooms = width * height / 6;
+    maxRooms = width * height / 4;
+
+    generateDungeon(width, height, minRooms, maxRooms);
+
+    // Print the room map for testing
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (i == startY && j == startX) {
+                cout << "[" << hasRoom[i][j] << "]";
+                continue;
+            }
+            if (startX == 0 && j == 0) cout << " ";
+            cout << hasRoom[i][j];
+            if (!(i == startY && j == startX - 1)) cout << " ";
+        }
+        cout << endl;
+    }
+
     cout << "You find yourself in an empty room. You have no idea how you got here.\n";
-    player.currentRoom = &rooms[startY][startX];
-    player.previousRoom = &rooms[startY][startX];
     while(true) {
         // enter room
         enterRoom(player.currentRoom);
@@ -635,13 +714,6 @@ int Dungeon::runDungeon() {
         if (player.checkIsDead()) {
             cout << "You have died! Try again?\n";
             return performEndGameLogic();
-        } else {
-            if (player.currentRoom->isExit) {
-                if (player.currentRoom->enemies.size() == 0) {
-                    cout << "You win! Play again?\n";
-                    return performEndGameLogic();
-                }
-            }
         }
     }
 }

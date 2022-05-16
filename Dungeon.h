@@ -29,7 +29,7 @@ public:
     void findAdjacentRooms(bool, int, int, vector<bool> &);
     void addRoom(int, int, bool, vector<Item> = vector<Item>(), vector<GameCharacter> = vector<GameCharacter>());
     // gridX and gridY must be greater than 1
-    void generateDungeon(int, int, int, int); // to be implemented as procedural generator
+    void generateDungeon(int, int, int, int);
     int runDungeon();
     void enterRoom(Room *);
     char handleInput(int, string[], vector<char>, bool=true, bool=true);

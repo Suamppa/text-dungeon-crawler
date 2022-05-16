@@ -6,6 +6,19 @@
 #include "RNG.cpp"
 #include <iostream>
 
+/*
+ TODO:
+ x ShuffleBag-luonti lukuvälille
+ x Enemy- ja Item-poolit käyttämään intPickeriä rangella, jos haluat
+ x Luonnissa varattujen ja kokeiltujen indeksien poissulkeminen uuden valinnasta jumin estämiseksi
+ x Navigointi kuntoon
+ x Kartan printtaus (ainakin testiksi)
+ - "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
+ - HP:n palautuminen
+ - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
+ - Kunnon inventory
+ */
+
 int main()
 {
     // Main loop
@@ -16,6 +29,7 @@ int main()
         cin >> playerName;
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10);
 
+        /*
         // Set up the first room
         Room firstRoom = Room(0, false, vector<Item>(), vector<GameCharacter>());
 
@@ -42,6 +56,23 @@ int main()
         dungeon.rooms[1] = secondRoom;
         dungeon.rooms[2] = thirdRoom;
         dungeon.rooms[3] = fourthRoom;
+         */
+
+        Dungeon dungeon = Dungeon(player);
+        dungeon.generateDungeon(10, 10, 4, 20);
+
+        // Print the room map for testing
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (i == dungeon.startY && j == dungeon.startX) {
+                    cout << "[" << dungeon.hasRoom[i][j] << "]";
+                    continue;
+                }
+                cout << dungeon.hasRoom[i][j];
+                if (!(i == dungeon.startY && j == dungeon.startX - 1)) cout << " ";
+            }
+            cout << endl;
+        }
 
         int result = dungeon.runDungeon();
         if (result == 0) {

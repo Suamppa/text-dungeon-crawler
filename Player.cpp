@@ -25,14 +25,15 @@ void Player::addItem(Item item) {
 
 void Player::gainXp(int amount) {
     currentXp += amount;
-    int overflowXp = maxXp - currentXp;
-    if (overflowXp <= 0) {
+    // int overflowXp = maxXp - currentXp;
+    if (currentXp >= maxXp) {
+        int overflowXp = currentXp - maxXp;
         levelUp(overflowXp);
     }
 }
 
 void Player::levelUp(int oxp) {
-    level++;
+    ++level;
     currentXp = oxp;
     maxXp += 50;
     increaseStats(10, 5, 5, 5);
@@ -52,6 +53,7 @@ void Player::changeRooms(Room * newRoom) {
 }
 
 void Player::printStats() {
+    cout << name << "\n";
     cout << "Level: " << level << "\n";
     cout << "XP: " << currentXp << " / " << maxXp << "\n";
     cout << "HP: " << currentHealth << " / " << maxHealth << "\n";

@@ -1,12 +1,10 @@
 # text-dungeon-crawler
 Practice project based on and extended from the project created during the Zenva Academy course "Learn C++ by Making a Text-Based RPG [2020]".
 
-This branch is in development and contains prototyping for a proper dungeon generation and navigation functionalities.
-Additionally, proper tasks.json was created for this branch.
+The branch "master" holds the latest stable version with no in-dev prototypes.
+In contrast, the original course project had just 4 hardcoded rooms and no RNG features. The original code as it was at the end of the course is not included in any of these versions uploaded to GitHub.
 
 Some planned features:
-- Proper procedural room and dungeon generation (in dev)
-- Less horrid dungeon navigation function (in dev)
 - Proper inventory and equip systems
 - More enemies
 - Loot system, removal of enemy-or-chest exclusivity

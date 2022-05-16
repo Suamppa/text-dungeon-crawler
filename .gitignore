@@ -1,4 +1,3 @@
 main_debug.exe
-.vscode/c_cpp_properties.json
-.vscode/launch.json
-.vscode/tasks.json
+main_debug.cpp
+.vscode/*

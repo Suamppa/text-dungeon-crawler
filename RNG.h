@@ -10,6 +10,7 @@
 
 using namespace std;
 
+// Generate a random integer from rangeFrom to (and including) rangeTo
 int rng(int, int);
 template <typename T>
 void shuffleVector(vector<T> *);
@@ -30,6 +31,10 @@ public:
     ShuffleBag(initializer_list<T> = initializer_list<T>());
     void add(T, int=1);
     void add(initializer_list<T>, int=1);
+    // ShuffleBag must be of type int.
+    // End of range is included by default.
+    // Args: range start, range end, exclude end (default false).
+    void addRange(int, int, bool=false);
     T draw(bool=false);
     void empty();
 };

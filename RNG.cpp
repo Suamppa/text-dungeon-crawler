@@ -27,14 +27,16 @@ ShuffleBag<T>::ShuffleBag(initializer_list<T> base)
 
 template <typename T>
 void ShuffleBag<T>::add(T item, int amount) {
-    if (amount > 1) {
+    if (amount < 1) {
+        return;
+    } else if (amount > 1) {
         for (int i = 0; i < amount; i++) {
             data.push_front(item);
-            currentPosition++;
+            ++currentPosition;
         }
     } else {
         data.push_front(item);
-        currentPosition++;
+        ++currentPosition;
     }
     size = data.size();
 }
@@ -42,16 +44,32 @@ void ShuffleBag<T>::add(T item, int amount) {
 template <typename T>
 void ShuffleBag<T>::add(initializer_list<T> items, int amount) {
     // for (int i = 0; i < items.size(); i++) {
+    if (amount < 1) {
+        return;
+    }
     for (T item: items) {
         if (amount > 1) {
             for (int j = 0; j < amount; j++) {
                 data.push_front(item);
-                currentPosition++;
+                ++currentPosition;
             }
         } else {
             data.push_front(item);
-            currentPosition++;
+            ++currentPosition;
         }
+    }
+    size = data.size();
+}
+
+template<typename T>
+void ShuffleBag<T>::addRange(int from, int to, bool excludeEnd) {
+    if (from >= to) {
+        return;
+    }
+    if (excludeEnd) --to;
+    for (int i = to; i >= from; i--) {
+        data.push_front(i);
+        ++currentPosition;
     }
     size = data.size();
 }
@@ -68,21 +86,22 @@ T ShuffleBag<T>::draw(bool debug) {
         currentPosition = size - 1;
     }
 
+    int pos = rng(0, currentPosition);
+    currentItem = data[pos];
+
     // Print for testing
     if (debug) {
-        cout << "\nPossible values:";
+        cout << "Possible values:";
         if (currentPosition == 0) {
             cout << " " << data[0];
         } else {
-            for (int i = 0; i < currentPosition+1; i++) {
+            for (int i = 0; i <= currentPosition; i++) {
             cout << " " << data[i];
             }
         }
-        cout << endl << "Result: ";
+        cout << "\n" << "Result: " << currentItem << "\n";
     }
-
-    int pos = rng(0, currentPosition);
-    currentItem = data[pos];
+    
     data[pos] = data[currentPosition];
     data[currentPosition] = currentItem;
     currentPosition--;

@@ -625,7 +625,7 @@ int Dungeon::performEndGameLogic() {
 }
 
 int Dungeon::runDungeon() {
-    cout << "Welcome to the dungeon! Inside you will find treasure but also enemies. Enter at your peril!\n";
+    cout << "You find yourself in an empty room. You have no idea how you got here.\n";
     player.currentRoom = &rooms[startY][startX];
     player.previousRoom = &rooms[startY][startX];
     while(true) {
@@ -633,7 +633,7 @@ int Dungeon::runDungeon() {
         enterRoom(player.currentRoom);
         // check if dead
         if (player.checkIsDead()) {
-            cout << "Game over! Try again?\n";
+            cout << "You have died! Try again?\n";
             return performEndGameLogic();
         } else {
             if (player.currentRoom->isExit) {

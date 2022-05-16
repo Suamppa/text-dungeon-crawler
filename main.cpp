@@ -13,7 +13,8 @@
  x Luonnissa varattujen ja kokeiltujen indeksien poissulkeminen uuden valinnasta jumin estämiseksi
  x Navigointi kuntoon
  x Kartan printtaus (ainakin testiksi)
- - "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
+ x "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
+ - Karttaominaisuus pelaajalle
  - HP:n palautuminen
  - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
  - Kunnon inventory

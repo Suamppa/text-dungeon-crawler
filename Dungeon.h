@@ -16,7 +16,8 @@ public:
     vector<vector<Room>> rooms;
     // Grid representing accessible rooms
     vector<vector<bool>> hasRoom;
-    int numRooms, startY, startX, depth;
+    int numRooms, startY, startX, exitY, exitX, depth, dungeonHeight, dungeonWidth;
+    vector<vector<char>> map;
     Dungeon(Player);
     // Checks if the argument 2D vector's index at (y, x) is reachable and returns a corresponding boolean value
     template <typename T>
@@ -27,7 +28,7 @@ public:
     // Checks the adjacent indices of hasRoom counter-clockwise starting from iy-1 for booleans equal to isRoom
     // and adds 4 boolean values to saveToVec corresponding to the match
     void findAdjacentRooms(bool, int, int, vector<bool> &);
-    void addRoom(int, int, bool, vector<Item> = vector<Item>(), vector<GameCharacter> = vector<GameCharacter>());
+    void addRoom(int, int, vector<Item> = vector<Item>(), vector<GameCharacter> = vector<GameCharacter>(), bool=false);
     // gridX and gridY must be greater than 1
     void generateDungeon(int, int, int, int);
     int runDungeon();
@@ -41,7 +42,8 @@ public:
     void handleLootActions(Room *);
     void handleFightActions(GameCharacter *);
     void handleMovementActions(Room *);
-    // void printActions(int, string[], bool=true, bool=true);
+    // adjacentRooms expects a 2D vector of adjacent room indices
+    void printMap(Room *, vector<vector<int>> &);
     bool performEndGameLogic();
 };
 

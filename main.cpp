@@ -15,6 +15,8 @@
  x Kartan printtaus (ainakin testiksi)
  x "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
  - Karttaominaisuus pelaajalle
+ - Dungeon-vektoreiden vaihto deque-tyyppiin?
+ - Iteraattorit käyttöön
  - HP:n palautuminen
  - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
  - Kunnon inventory

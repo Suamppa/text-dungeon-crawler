@@ -51,6 +51,7 @@ void Player::lootRoom(Room * room) {
 void Player::changeRooms(Room * newRoom) {
     previousRoom = currentRoom;
     currentRoom = newRoom;
+    currentRoom->visited = true;
 }
 
 void Player::printStats() {

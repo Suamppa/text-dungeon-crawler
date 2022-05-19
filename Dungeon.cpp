@@ -305,6 +305,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     }
 
     // Create the actual rooms
+    cout << "Starting room generation" << endl;
     rooms = vector<vector<Room>>(dungeonHeight, vector<Room>(dungeonWidth, Room()));
     map = vector<vector<char>>(dungeonHeight, vector<char>(dungeonWidth, ' '));
     for (int i = 0; i < dungeonHeight; i++) {
@@ -319,7 +320,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                     roomType = intPicker.draw();
                     intPicker.empty();
                 }
-                cout << "Room type picked" << endl;
+                cout << "Room [" << i << ',' << j << "] type picked" << endl;
                 if (roomType == 1) {
                     // Randomise enemy
                     intPicker.addRange(0, enemyPoolEnd);
@@ -333,7 +334,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                     roomItems.push_back(itemPool[poolInd]);
                 }
                 addRoom(i, j, roomItems, roomEnemies);
-                cout << "Room added to [" << i << ", " << j << ']' << endl;
+                cout << "Room added to [" << i << ',' << j << ']' << endl;
 
                 if ((i == exitY) && (j == exitX)) {
                     rooms[i][j].isExit = true;

@@ -192,6 +192,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
         indexX = freeInds[y][1];
         hasRoom[indexY][indexX] = true;
         ++numRooms;
+        cout << "Room #" << numRooms << " placed" << endl;
 
         if (allowExit) {
             // Roll for exit
@@ -332,7 +333,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                     roomItems.push_back(itemPool[poolInd]);
                 }
                 addRoom(i, j, roomItems, roomEnemies);
-                cout << "Room #" << numRooms << " created" << endl;
+                cout << "Room added to [" << i << ", " << j << ']' << endl;
 
                 if ((i == exitY) && (j == exitX)) {
                     rooms[i][j].isExit = true;
@@ -733,8 +734,14 @@ void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
         for (int j = 0; j < dungeonWidth; j++) {
             drawn = false;
             if (hasRoom[i][j]) {
-                if (&rooms[i][j] == room) mapToPrint.push_back('X');
-                else if (rooms[i][j].visited) mapToPrint.push_back('0');
+                if (&rooms[i][j] == room) {
+                    mapToPrint.push_back('X');
+                    drawn = true;
+                }
+                else if (rooms[i][j].visited) {
+                    mapToPrint.push_back('0');
+                    drawn = true;
+                }
                 else {
                     for (vector<vector<int>>::iterator it = adjacentRooms.begin(); it != adjacentRooms.end(); it++) {
                         if ((it->at(0) == i) && (it->at(1) == j)) {
@@ -743,9 +750,9 @@ void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
                             break;
                         }
                     }
-                    if (!drawn) mapToPrint.push_back(' ');
                 }
             }
+            if (!drawn) mapToPrint.push_back(' ');
         }
         mapToPrint.push_back('\n');
     }

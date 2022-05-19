@@ -32,7 +32,7 @@ int main()
         cin >> playerName;
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10);
 
-        /*
+        /* The original setup
         // Set up the first room
         Room firstRoom = Room(0, false, vector<Item>(), vector<GameCharacter>());
 
@@ -62,20 +62,6 @@ int main()
          */
 
         Dungeon dungeon = Dungeon(player);
-        // dungeon.generateDungeon(10, 10, 4, 20);
-
-        // Print the room map for testing
-        // for (int i = 0; i < 10; i++) {
-        //     for (int j = 0; j < 10; j++) {
-        //         if (i == dungeon.startY && j == dungeon.startX) {
-        //             cout << "[" << dungeon.hasRoom[i][j] << "]";
-        //             continue;
-        //         }
-        //         cout << dungeon.hasRoom[i][j];
-        //         if (!(i == dungeon.startY && j == dungeon.startX - 1)) cout << " ";
-        //     }
-        //     cout << endl;
-        // }
 
         int result = dungeon.runDungeon();
         if (result == 0) {

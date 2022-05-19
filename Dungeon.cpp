@@ -4,6 +4,7 @@ Dungeon::Dungeon(Player p)
 {
     player = p;
     depth = 0;
+    revealMap = false;
 }
 
 /* void Dungeon::printActions(int numActions, string actions[], bool allowStats, bool allowInventory) {
@@ -79,7 +80,7 @@ void Dungeon::findAdjacentRooms(bool isRoom, int iy, int ix, vector<bool> & save
 
 void Dungeon::addRoom(int y, int x, vector<Item> items, vector<GameCharacter> enemies, bool isExit) {
     rooms[y][x] = Room(y, x, isExit, items, enemies);
-    map[y][x] = 'o';
+    map[y][x] = '0';
 }
 
 void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) {
@@ -338,7 +339,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
 
                 if ((i == exitY) && (j == exitX)) {
                     rooms[i][j].isExit = true;
-                    map[i][j] = 'e';
+                    map[i][j] = 'C';
                 }
 
                 roomEnemies.clear();
@@ -352,7 +353,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     player.currentRoom = &rooms[startY][startX];
     player.previousRoom = &rooms[startY][startX];
     player.currentRoom->visited = true;
-    map[startY][startX] = 's';
+    map[startY][startX] = 'O';
     cout << "Dungeon generation finished" << endl;
 }
 
@@ -735,17 +736,17 @@ void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
             drawn = false;
             if (hasRoom[i][j]) {
                 if (&rooms[i][j] == room) {
-                    mapToPrint.push_back('X');
+                    mapToPrint.push_back('X');  // Player's current position
                     drawn = true;
                 }
-                else if (rooms[i][j].visited) {
-                    mapToPrint.push_back('0');
+                else if (revealMap || rooms[i][j].visited) {
+                    mapToPrint.push_back(map[i][j]);  // A visited room
                     drawn = true;
                 }
                 else {
                     for (vector<vector<int>>::iterator it = adjacentRooms.begin(); it != adjacentRooms.end(); it++) {
                         if ((it->at(0) == i) && (it->at(1) == j)) {
-                            mapToPrint.push_back('o');
+                            mapToPrint.push_back('o');  // An adjacent, not yet visited room
                             drawn = true;
                             break;
                         }
@@ -753,6 +754,8 @@ void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
                 }
             }
             if (!drawn) mapToPrint.push_back(' ');
+            // A space between all characters looks cleaner
+            mapToPrint.push_back(' ');
         }
         mapToPrint.push_back('\n');
     }

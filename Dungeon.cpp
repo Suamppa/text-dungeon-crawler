@@ -730,7 +730,6 @@ void Dungeon::handleMovementActions(Room * room) {
 void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
     string mapToPrint;
     bool drawn;
-    // Jokin hajoaa, jos pelaaja on muualla kuin ensimmäisellä sarakkeella (j=0)
     for (int i = 0; i < dungeonHeight; i++) {
         for (int j = 0; j < dungeonWidth; j++) {
             drawn = false;

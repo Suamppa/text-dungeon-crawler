@@ -4,6 +4,7 @@ Dungeon::Dungeon(Player p)
 {
     player = p;
     depth = 0;
+    revealMap = false;
 }
 
 /* void Dungeon::printActions(int numActions, string actions[], bool allowStats, bool allowInventory) {
@@ -77,10 +78,9 @@ void Dungeon::findAdjacentRooms(bool isRoom, int iy, int ix, vector<bool> & save
     }
 }
 
-void Dungeon::addRoom(int y, int x, bool isExit, vector<Item> items, vector<GameCharacter> enemies) {
+void Dungeon::addRoom(int y, int x, vector<Item> items, vector<GameCharacter> enemies, bool isExit) {
     rooms[y][x] = Room(y, x, isExit, items, enemies);
-    hasRoom[y][x] = true;
-    ++numRooms;
+    map[y][x] = '0';
 }
 
 void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) {
@@ -99,24 +99,20 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     maxRooms = ((maxRooms < gridSize) && (maxRooms > 0)) ? maxRooms : gridSize;
 
     // Create a 2D vector of the dungeon level
-    // vector<vector<bool>> dungeon(gridY, vector<bool>(gridX, 0));
+    //// hasRoom-vektorin vaihto deque-tyyppiin?
     hasRoom = vector<vector<bool>>(gridY, vector<bool>(gridX, false));
-    rooms = vector<vector<Room>>(gridY, vector<Room>(gridX, Room()));
     // Choose the index of the starting room
     int indexY = rng(0, gridY-1);
     int indexX = rng(0, gridX-1);
-    // Construct the first room
     startY = indexY;
     startX = indexX;
-    addRoom(startY, startX, false);
-    player.currentRoom = &rooms[startY][startX];
-    player.previousRoom = &rooms[startY][startX];
-    cout << "First room created" << endl;
+    hasRoom[startY][startX] = true;
+    ++numRooms;
+    cout << "Starting room selected" << endl;
     
     // Enemy creation and selection can be made fancier, this is just a mockup
     GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25);
     GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50);
-    // vector<GameCharacter> enemyPool{littleMonster, littleMonster, littleMonster, bigMonster};
     Item sword = Item("Sword", 0, 20, 25, 1);
     Item shield = Item("Shield", 0, 0, 0, 5);
     cout << "Enemy and item pools created" << endl;
@@ -133,161 +129,232 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     vector<Item> roomItems;
     // A vector for holding the indices of available adjacent free spaces
     vector<vector<int>> freeInds;
-    // int adjInds[2] = {-1, 1};
+
+    //// SATUNNAISLUONTI KÄSITTELEMÄÄN PELKKÄÄ hasRoom JA HUONEIDEN LISÄÄMINEN TRIMMAUKSEN JÄLKEEN?
 
     // Main generation loop
-    while (numRooms <= maxRooms) {
+    cout << "Starting layout generation" << endl;
+    while (numRooms < maxRooms) {
         cout << "Picking a new index" << endl;
         // Check adjacent indices for free space
         findAdjacentRooms(false, indexY, indexX, freeInds);
-        // for (int i = 0; i < 2; i++) {
-        //     y = indexY + adjInds[i];
-        //     x = indexX + adjInds[i];
-        //     if (check2DBounds(hasRoom, y, indexX)) {
-        //         if (!hasRoom[y][indexX]) freeInds.push_back({y, indexX});
-        //     }
-        //     if (check2DBounds(hasRoom, indexY, x)) {
-        //         if (!hasRoom[indexY][x]) freeInds.push_back({indexY, x});
-        //     }
-        // }
 
         // If no adjacent spaces are free, check diagonals
         if (freeInds.size() < 1) {
             findAdjacentRooms(false, indexY, indexX, freeInds, true);
         }
-        //     for (int i = 0; i < 2; i++) {
-        //         y = indexY - 1;
-        //         x = indexX + adjInds[i];
-        //         if (check2DBounds(hasRoom, y, x)) {
-        //             if (!hasRoom[y][x]) freeInds.push_back({y, x});
-        //         }
-        //         y = indexY + 1;
-        //         if (check2DBounds(hasRoom, y, x)) {
-        //             if (!hasRoom[y][x]) freeInds.push_back({y, x});
-        //         }
-        //     }
-        // }
 
         // If a free space is still not found, create an exit if allowed or find a free adjacent space elsewhere
         if (freeInds.size() < 1) {
             if (allowExit) {
-                if (!hasRoom[indexY][indexX]) {
-                    addRoom(indexY, indexX, true, roomItems, roomEnemies);
-                } else rooms[indexY][indexX].isExit = true;
-                cout << "Exit created\nDungeon generation finished" << endl;
+                if (!hasRoom[indexY][indexX]) hasRoom[indexY][indexX] = true;
+                exitY = indexY;
+                exitX = indexX;
+                cout << "Exit selected\nDungeon layout finished" << endl;
                 break;
             } else {
-                cout << "No free space, finding a new reference" << endl;
-                if (indexY >= gridY / 2) {
-                    for (int i = 0; i < gridY-1; i++) {
-                        for (int j = 0; j < gridX-1; j++) {
-                            if (hasRoom[i][j] && (!hasRoom[i][j+1] || !hasRoom[i+1][j])) {
-                                indexY = i;
-                                indexX = j;
-                                continue;
-                            }
+                cout << "No free space, finding a free index" << endl;
+                bool indFound = false;
+                for (int i = 0; i < gridY-1; i++) {
+                    for (int j = 0; j < gridX-1; j++) {
+                        if (hasRoom[i][j] && (!hasRoom[i][j+1] || !hasRoom[i+1][j])) {
+                            indexY = i;
+                            indexX = j;
+                            indFound = true;
+                            break;
                         }
                     }
-                } else {
-                    for (int i = gridY-1; i > 0; i--) {
-                        for (int j = gridX-1; j > 0; j--) {
-                            if (hasRoom[i][j] && (!hasRoom[i][j-1] || !hasRoom[i-1][j])) {
-                                indexY = i;
-                                indexX = j;
-                                continue;
-                            }
-                        }
-                    }
+                    if (indFound) break;
                 }
+                if (indFound) continue;
+                for (int i = gridY-1; i > 0; i--) {
+                    for (int j = gridX-1; j > 0; j--) {
+                        if (hasRoom[i][j] && (!hasRoom[i][j-1] || !hasRoom[i-1][j])) {
+                            indexY = i;
+                            indexX = j;
+                            indFound = true;
+                            break;
+                        }
+                    }
+                    if (indFound) break;
+                }
+                if (indFound) continue;
+                else {
+                    cout << "Dungeon generation failed" << endl;
+                    return;
+                }   // This statement should not be reachable
             }
         }
 
-        // Pick a random free index
+        // Pick a random free index and flag it for room creation (add to hasRoom)
         intPicker.addRange(0, freeInds.size(), true);
         y = intPicker.draw();
         indexY = freeInds[y][0];
         indexX = freeInds[y][1];
-        intPicker.empty();
+        hasRoom[indexY][indexX] = true;
+        ++numRooms;
+        cout << "Room #" << numRooms << " placed" << endl;
 
-        /*
-        // Randomly pick an adjacent space
-        intPicker.add({0, 1});
-        y = intPicker.draw();
-        x = intPicker.draw();
-        // Randomise the 1's sign
-        intPicker.empty();
-        intPicker.add({-1, 1});
-        y *= intPicker.draw();
-        x *= intPicker.draw();
-        // Check for border values and flip y/x if needed
-        if ((y == -1) && (indexY < 1)) {
-            y = 1;
-        } else if ((y == 1) && (indexY >= gridY-1)) {
-            y = -1;
-        }
-        if ((x == -1) && (indexX < 1)) {
-            x = 1;
-        } else if ((x == 1) && (indexX >= gridX-1)) {
-            x = -1;
-        }
-        // Update index
-        indexY += y;
-        indexX += x;
-        intPicker.empty();
-        cout << "New index selected" << endl;
-         */
-
-        if (!hasRoom[indexY][indexX]) {
-            // Randomise enemies and loot, then create room
-            // This implementation is temporary as rooms with both enemies and loot are planned
-            intPicker.add({0, 1, 1, 1, 2}); // 0 = empty, 1 = enemy, 2 = loot
-            roomType = intPicker.draw();
-            cout << "Room type picked" << endl;
-            if (roomType == 1) {
-                // Randomise enemy
-                intPicker.empty();
-                intPicker.addRange(0, enemyPoolEnd);
-                poolInd = intPicker.draw();
-                roomEnemies.push_back(enemyPool[poolInd]);
-            }
-            if (roomType == 2) {
-                // Randomise item
-                intPicker.empty();
-                intPicker.addRange(0, itemPoolEnd);
-                poolInd = intPicker.draw();
-                roomItems.push_back(itemPool[poolInd]);
-            }
-            if (allowExit) {
-                // Roll for exit
-                // Chance is based on the number of rooms created
-                cout << "Rolling for exit creation" << endl;
-                nonExitOdds = maxRooms - (numRooms + 1);
-                intPicker.empty();
-                intPicker.add(0, nonExitOdds);
-                intPicker.add(1);
-                isExit = intPicker.draw(true);
-            }
-            addRoom(indexY, indexX, isExit, roomItems, roomEnemies);
-            cout << "Room #" << numRooms << " created" << endl;
-
-            // Stop dungeon creation when an exit is created
-            if (isExit) {
-                cout << "Exit created\nDungeon generation finished" << endl;
-                break;
-            }
-            
-            if ((!allowExit) && (numRooms >= minRooms)) {
-                cout << "Allowing exit creation" << endl;
-                allowExit = true;
-            }
-            roomEnemies.clear();
-            roomItems.clear();
+        if (allowExit) {
+            // Roll for exit
+            // Chance is based on the number of rooms created
+            cout << "Rolling for exit creation" << endl;
+            nonExitOdds = maxRooms - numRooms;
             intPicker.empty();
-        } else {
-            cout << "Room already created here" << endl;
+            intPicker.add(0, nonExitOdds);
+            intPicker.add(1);
+            isExit = intPicker.draw(true);
         }
+        // Stop layout creation when an exit is set
+        if (isExit) {
+            exitY = indexY;
+            exitX = indexX;
+            cout << "Exit selected\nDungeon layout finished" << endl;
+            break;
+        }
+        
+        if ((!allowExit) && (numRooms >= minRooms)) {
+            cout << "Allowing exit creation" << endl;
+            allowExit = true;
+        }
+        intPicker.empty();
         freeInds.clear();
     }
+
+    // Print the room map for testing
+    for (int i = 0; i < gridY; i++) {
+        for (int j = 0; j < gridX; j++) {
+            if (i == startY && j == startX) {
+                cout << "[" << hasRoom[i][j] << "]";
+                continue;
+            }
+            if (startX == 0 && j == 0) cout << " ";
+            cout << hasRoom[i][j];
+            if (!(i == startY && j == startX - 1)) cout << " ";
+        }
+        cout << endl;
+    }
+
+    // Trim the grid to fit just the actual rooms
+    bool saveRow;
+    int minX = gridX - 1;
+    int maxX = 0;
+    cout << "Original dungeon size: " << gridY << 'x' << gridX << '\n';
+    cout << "Starting dungeon trimming" << endl;
+    for (int i = gridY-1; i >= 0; i--) {
+        saveRow = false;
+        for (int j = gridX-1; j >= 0; j--) {
+            if (!saveRow && hasRoom[i][j]) {
+                cout << "Room found, saving row" << endl;
+                saveRow = true;
+                maxX = max(j + 1, maxX);
+                cout << "maxX changed to " << maxX << endl;
+            } else if (saveRow && hasRoom[i][j]) {
+                minX = min(j, minX);
+                cout << "minX changed to " << minX << endl;
+            }
+        }
+        if (!saveRow) {
+            cout << "Deleting empty row" << endl;
+            hasRoom.erase(hasRoom.begin() + i);
+            // rooms.erase(rooms.begin() + i);
+            // map.erase(map.begin() + i);
+            // Correct start and exit locations if necessary
+            if (i < startY) --startY;
+            if (i < exitY) --exitY;
+        }
+    }
+    dungeonHeight = hasRoom.size();
+    if ((minX != 0) || (maxX < gridX)) {
+        cout << "Trimming width" << '\n';
+        cout << "minX = " << minX << "\nmaxX = " << maxX << endl;
+        for (int i = 0; i < dungeonHeight; i++) {
+            if (maxX < gridX - 1) {
+                hasRoom[i].erase(hasRoom[i].begin()+maxX, hasRoom[i].end());
+                // rooms[i].erase(rooms[i].begin()+maxX, rooms[i].end());
+                // map[i].erase(map[i].begin()+maxX, map[i].end());
+            } else if (maxX == gridX - 1) {
+                hasRoom[i].erase(hasRoom[i].begin()+maxX);
+                // rooms[i].erase(rooms[i].begin()+maxX);
+                // map[i].erase(map[i].begin()+maxX);
+            }
+            if (minX > 0) {
+                hasRoom[i].erase(hasRoom[i].begin(), hasRoom[i].begin()+minX);
+                // rooms[i].erase(rooms[i].begin(), rooms[i].begin()+minX);
+                // map[i].erase(map[i].begin(), map[i].begin()+minX);
+            }
+        }
+        // Correct start and exit locations
+        startX -= minX;
+        exitX -= minX;
+    }
+    dungeonWidth = hasRoom[0].size();
+    cout << "Trim finished" << endl;
+
+    // Print the room map for testing
+    for (int i = 0; i < dungeonHeight; i++) {
+        for (int j = 0; j < dungeonWidth; j++) {
+            if (i == startY && j == startX) {
+                cout << "[" << hasRoom[i][j] << "]";
+                continue;
+            }
+            if (startX == 0 && j == 0) cout << " ";
+            cout << hasRoom[i][j];
+            if (!(i == startY && j == startX - 1)) cout << " ";
+        }
+        cout << endl;
+    }
+
+    // Create the actual rooms
+    cout << "Starting room generation" << endl;
+    rooms = vector<vector<Room>>(dungeonHeight, vector<Room>(dungeonWidth, Room()));
+    map = vector<vector<char>>(dungeonHeight, vector<char>(dungeonWidth, ' '));
+    for (int i = 0; i < dungeonHeight; i++) {
+        for (int j = 0; j < dungeonWidth; j++) {
+            if (hasRoom[i][j]) {
+                // Randomise enemies and loot, then create room
+                // This implementation is temporary as rooms with both enemies and loot are planned
+                // Starting room is always empty
+                if ((i == startY) && (j == startX)) roomType = 0;
+                else {
+                    intPicker.add({0, 1, 1, 1, 2}); // 0 = empty, 1 = enemy, 2 = loot
+                    roomType = intPicker.draw();
+                    intPicker.empty();
+                }
+                cout << "Room [" << i << ',' << j << "] type picked" << endl;
+                if (roomType == 1) {
+                    // Randomise enemy
+                    intPicker.addRange(0, enemyPoolEnd);
+                    poolInd = intPicker.draw();
+                    roomEnemies.push_back(enemyPool[poolInd]);
+                }
+                if (roomType == 2) {
+                    // Randomise item
+                    intPicker.addRange(0, itemPoolEnd);
+                    poolInd = intPicker.draw();
+                    roomItems.push_back(itemPool[poolInd]);
+                }
+                addRoom(i, j, roomItems, roomEnemies);
+                cout << "Room added to [" << i << ',' << j << ']' << endl;
+
+                if ((i == exitY) && (j == exitX)) {
+                    rooms[i][j].isExit = true;
+                    map[i][j] = 'C';
+                }
+
+                roomEnemies.clear();
+                roomItems.clear();
+                intPicker.empty();
+            }
+        }
+    }
+
+    cout << "Setting player position" << endl;
+    player.currentRoom = &rooms[startY][startX];
+    player.previousRoom = &rooms[startY][startX];
+    player.currentRoom->visited = true;
+    map[startY][startX] = 'O';
+    cout << "Dungeon generation finished" << endl;
 }
 
 char Dungeon::handleInput(int numActions, string actions[], vector<char> legalInputs, bool allowStats, bool allowInventory) {
@@ -500,16 +567,10 @@ void Dungeon::handleExitRoom(Room * room) {
 
             generateDungeon(width, height, minRooms, maxRooms);
 
-            // Print the room map for testing
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    if (i == startY && j == startX) {
-                        cout << "[" << hasRoom[i][j] << "]";
-                        continue;
-                    }
-                    if (startX == 0 && j == 0) cout << " ";
-                    cout << hasRoom[i][j];
-                    if (!(i == startY && j == startX - 1)) cout << " ";
+            // Print the dungeon map for testing
+            for (int i = 0; i < dungeonHeight; i++) {
+                for (int j = 0; j < dungeonWidth; j++) {
+                    cout << map[i][j] << ' ';
                 }
                 cout << endl;
             }
@@ -571,27 +632,29 @@ void Dungeon::handleMovementActions(Room * room) {
     int allMovements[4][2] = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
     vector<bool> availableRooms;
     vector<string> actions;
-    vector<vector<int>> movements;
+    vector<vector<int>> adjacentRooms;
+    // vector<vector<int>> movements;
     vector<char> options;
     char selection;
-    int optionASCII = 48;   // 49 is the ASCII code for 1
+    int optionASCII = 48;   // 48 is the ASCII code for 0
 
     findAdjacentRooms(true, room->y, room->x, availableRooms);
     for (int i = 0; i < 4; i++) {
         if (availableRooms[i]) {
             actions.push_back(allActions[i]);
-            movements.push_back({allMovements[i][0], allMovements[i][1]});
+            adjacentRooms.push_back({room->y + allMovements[i][0], room->x + allMovements[i][1]});
             ++optionASCII;
             options.push_back(optionASCII);
         }
     }
     int numOptions = options.size();
+    printMap(room, adjacentRooms);
     selection = handleInput(actions, options, false, false);
     for (int i = 0; i < numOptions; i++) {
         if (selection == options[i]) {
-            int y = room->y + movements[i][0];
-            int x = room->x + movements[i][1];
-            player.changeRooms(&rooms[y][x]);
+            // int y = room->y + adjacentRooms[i][0];
+            // int x = room->x + adjacentRooms[i][1];
+            player.changeRooms(&rooms[adjacentRooms[i][0]][adjacentRooms[i][1]]);
             cout << "You head " << actions[i].substr(5) << ".\n";
             return;
         }
@@ -665,6 +728,40 @@ void Dungeon::handleMovementActions(Room * room) {
 }
  */
 
+void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
+    string mapToPrint;
+    bool drawn;
+    for (int i = 0; i < dungeonHeight; i++) {
+        for (int j = 0; j < dungeonWidth; j++) {
+            drawn = false;
+            if (hasRoom[i][j]) {
+                if (&rooms[i][j] == room) {
+                    mapToPrint.push_back('X');  // Player's current position
+                    drawn = true;
+                }
+                else if (revealMap || rooms[i][j].visited) {
+                    mapToPrint.push_back(map[i][j]);  // A visited room
+                    drawn = true;
+                }
+                else {
+                    for (vector<vector<int>>::iterator it = adjacentRooms.begin(); it != adjacentRooms.end(); it++) {
+                        if ((it->at(0) == i) && (it->at(1) == j)) {
+                            mapToPrint.push_back('o');  // An adjacent, not yet visited room
+                            drawn = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!drawn) mapToPrint.push_back(' ');
+            // A space between all characters looks cleaner
+            mapToPrint.push_back(' ');
+        }
+        mapToPrint.push_back('\n');
+    }
+    cout << mapToPrint;
+}
+
 bool Dungeon::performEndGameLogic() {
     string actions[] = {"1. Yes", "2. No"};
     while(true) {
@@ -692,16 +789,10 @@ int Dungeon::runDungeon() {
 
     generateDungeon(width, height, minRooms, maxRooms);
 
-    // Print the room map for testing
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (i == startY && j == startX) {
-                cout << "[" << hasRoom[i][j] << "]";
-                continue;
-            }
-            if (startX == 0 && j == 0) cout << " ";
-            cout << hasRoom[i][j];
-            if (!(i == startY && j == startX - 1)) cout << " ";
+    // Print the dungeon map for testing
+    for (int i = 0; i < dungeonHeight; i++) {
+        for (int j = 0; j < dungeonWidth; j++) {
+            cout << map[i][j] << ' ';
         }
         cout << endl;
     }

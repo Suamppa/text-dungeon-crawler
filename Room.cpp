@@ -37,15 +37,17 @@ Room::Room(int iy, int ix, bool ie, vector<Item> is, vector<GameCharacter> gcs)
     isExit = ie;
     items = is;
     enemies = gcs;
+    visited = false;
 }
 
-Room::Room(int p, bool ie, vector<Item> is, vector<GameCharacter> gcs)
-{
-    pos = p;
-    isExit = ie;
-    items = is;
-    enemies = gcs;
-} // Old Room constructor for compatibility while prototyping dungeon creation
+// Old Room constructor
+// Room::Room(int p, bool ie, vector<Item> is, vector<GameCharacter> gcs)
+// {
+//     pos = p;
+//     isExit = ie;
+//     items = is;
+//     enemies = gcs;
+// }
 
 // Room::Room(int p, int entry, int neighbourStates[4], bool fd, bool ie, vector<Item> is, vector<GameCharacter> gcs)
 // {
@@ -101,9 +103,4 @@ void Room::clearLoot() {
 
 void Room::clearEnemies() {
     enemies.clear();
-}
-
-Door::Door(Room * ld)
-{
-    leadsTo = ld;
 }

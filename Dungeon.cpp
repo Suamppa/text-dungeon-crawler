@@ -130,8 +130,6 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     // A vector for holding the indices of available adjacent free spaces
     vector<vector<int>> freeInds;
 
-    //// SATUNNAISLUONTI KÄSITTELEMÄÄN PELKKÄÄ hasRoom JA HUONEIDEN LISÄÄMINEN TRIMMAUKSEN JÄLKEEN?
-
     // Main generation loop
     cout << "Starting layout generation" << endl;
     while (numRooms < maxRooms) {

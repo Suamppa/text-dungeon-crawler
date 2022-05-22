@@ -41,7 +41,7 @@ public:
     char handleInput(int, string[], vector<char>, bool=true, bool=true);
     // Handles user input. Takes a vector of strings for printing and
     // automatically labels the argument actions during printing with legalInputs.
-    char handleInput(vector<string>, vector<char> &, bool=true, bool=true);
+    char handleInput(vector<string>, vector<char> &, bool=true, bool=true, bool=false);
     // Logic for an empty room
     void handleEmptyRoom(Room *);
     // Logic for a room with a chest

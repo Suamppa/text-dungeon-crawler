@@ -14,7 +14,7 @@
  x Navigointi kuntoon
  x Kartan printtaus (ainakin testiksi)
  x "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
- - Karttaominaisuus pelaajalle
+ x Karttaominaisuus pelaajalle
  - Dungeon-vektoreiden vaihto deque-tyyppiin?
  - Iteraattorit käyttöön
  - HP:n palautuminen

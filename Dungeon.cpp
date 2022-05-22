@@ -364,12 +364,12 @@ char Dungeon::handleInput(int numActions, string actions[], vector<char> legalIn
             cout << actions[i] << "\n";
         }
         if (allowStats) {
-            cout << "[S]tats" << "\n";
+            cout << "[S]tats\n";
             legalInputs.push_back('s');
             ++numActions;
         }
         if (allowInventory) {
-            cout << "[I]nventory" << "\n";
+            cout << "[I]nventory\n";
             legalInputs.push_back('i');
             ++numActions;
         }
@@ -384,7 +384,7 @@ char Dungeon::handleInput(int numActions, string actions[], vector<char> legalIn
     }
 }
 
-char Dungeon::handleInput(vector<string> actions, vector<char> & legalInputs, bool allowStats, bool allowInventory) {
+char Dungeon::handleInput(vector<string> actions, vector<char> & legalInputs, bool allowStats, bool allowInventory, bool allowCancel) {
     string input;
     char selection;
     int numActions = legalInputs.size();
@@ -393,13 +393,18 @@ char Dungeon::handleInput(vector<string> actions, vector<char> & legalInputs, bo
         cout << legalInputs[i] << ". " << actions[i] << "\n";
     }
     if (allowStats) {
-        cout << "[S]tats" << "\n";
+        cout << "[S]tats\n";
         legalInputs.push_back('s');
         ++numActions;
     }
     if (allowInventory) {
-        cout << "[I]nventory" << "\n";
+        cout << "[I]nventory\n";
         legalInputs.push_back('i');
+        ++numActions;
+    }
+    if (allowCancel) {
+        cout << "[C]ancel\n";
+        legalInputs.push_back('c');
         ++numActions;
     }
     while (true) {
@@ -631,7 +636,6 @@ void Dungeon::handleMovementActions(Room * room) {
     vector<bool> availableRooms;
     vector<string> actions;
     vector<vector<int>> adjacentRooms;
-    // vector<vector<int>> movements;
     vector<char> options;
     char selection;
     int optionASCII = 48;   // 48 is the ASCII code for 0
@@ -647,11 +651,10 @@ void Dungeon::handleMovementActions(Room * room) {
     }
     int numOptions = options.size();
     printMap(room, adjacentRooms);
-    selection = handleInput(actions, options, false, false);
+    selection = handleInput(actions, options, false, false, true);
+    if (selection == 'c') return;
     for (int i = 0; i < numOptions; i++) {
         if (selection == options[i]) {
-            // int y = room->y + adjacentRooms[i][0];
-            // int x = room->x + adjacentRooms[i][1];
             player.changeRooms(&rooms[adjacentRooms[i][0]][adjacentRooms[i][1]]);
             cout << "You head " << actions[i].substr(5) << ".\n";
             return;

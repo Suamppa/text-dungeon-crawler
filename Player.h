@@ -10,7 +10,6 @@ public:
     Room * currentRoom;
     Room * previousRoom;
     int level, currentXp, maxXp;
-    vector<Item> inventory;
     Player(string="", int=0, int=0, int=0, int=0, int=0, int=0, int=0);
     void addItem(Item);
     void increaseStats(int, int, int, int);

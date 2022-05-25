@@ -1,6 +1,6 @@
 #include "GameCharacter.h"
 
-GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy)
+GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, vector<Item> inv)
 {
     name = n;
     maxHealth = h;

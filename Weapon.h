@@ -8,6 +8,7 @@ class Weapon: public Item
 public:
     int minAttack, maxAttack, defence;
     Weapon(string, int, int, int);
+    string getInfoStr();
 };
 
 #endif

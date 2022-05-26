@@ -1,12 +1,13 @@
 #include "Player.h"
 
-Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d): GameCharacter(n, h, mina, maxa, d, cxp)
+Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d, vector<Item *> inv):
+GameCharacter(n, h, mina, maxa, d, cxp, inv)
 {
     level = lvl;
     currentXp = cxp;
     maxXp = mxp;
-    Item fists = Item("Fists", 0, 1, 5, 0);
-    addItem(fists);
+    // Weapon fists = Weapon("Fists", 1, 5, 0);
+    // addItem(fists);
 }
 
 void Player::increaseStats(int h, int mina, int maxa, int d) {
@@ -17,10 +18,18 @@ void Player::increaseStats(int h, int mina, int maxa, int d) {
     defence += d;
 }
 
-void Player::addItem(Item item) {
+void Player::addItem(Item * item) {
     inventory.push_back(item);
-    increaseStats(item.health, item.minAttack, item.maxAttack, item.defence);
+    // increaseStats(item.health, item.minAttack, item.maxAttack, item.defence);
 }
+
+// void Player::addItem(Weapon weapon) {
+//     inventory.push_back(weapon);
+// }
+
+// void Player::addItem(Armour armour) {
+//     inventory.push_back(armour);
+// }
 
 void Player::gainXp(int amount) {
     currentXp += amount;
@@ -44,7 +53,7 @@ void Player::levelUp(int oxp) {
 void Player::lootRoom(Room * room) {
     vector<Item> items = room->items;
     for (int i = 0; i < items.size(); i++) {
-        addItem(items[i]);
+        addItem(&items[i]);
     }
 }
 
@@ -65,13 +74,15 @@ void Player::printStats() {
 }
 
 void Player::printInventory() {
+    int count = 1;
     int inventorySize = inventory.size();
     cout << "Inventory:\n";
     for (int i = 0; i < inventorySize; i++) {
-        cout << i+1 << ". " << inventory[i].name
-        << ", HP: " << inventory[i].health
-        << ", ATK: " << inventory[i].minAttack << "-" << inventory[i].maxAttack
-        << ", DEF: " << inventory[i].defence << "\n";
+        cout << i+1 << ". " << inventory.at(i)->getInfoStr() << "\n";
     }
+    // for (vector<Item *>::iterator it = inventory.begin(); it != inventory.end(); it++) {
+    //     cout << count << ". " << it.getInfoStr() << '\n';
+    //     ++count;
+    // }
     cout << "\n";
 }

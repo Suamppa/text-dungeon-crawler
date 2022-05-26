@@ -30,3 +30,7 @@ Item::Item(string n)
 {
     name = n;
 }
+
+string Item::getInfoStr() {
+    return name;
+}

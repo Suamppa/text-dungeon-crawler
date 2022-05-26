@@ -1,6 +1,7 @@
-#include "Item.h"
+#include "Armour.h"
 #include "GameCharacter.h"
 #include "RNG.h"
+#include "Weapon.h"
 
 #ifndef ROOM_H
 #define ROOM_H

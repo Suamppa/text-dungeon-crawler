@@ -11,6 +11,7 @@ public:
     int health, defence;
     Armour(string, int, int, char);
     void setEquipType(char) noexcept(false);
+    string getInfoStr();
 };
 
 #endif

@@ -1,9 +1,11 @@
+#include "Armour.cpp"
 #include "Dungeon.cpp"
-#include "Player.cpp"
 #include "GameCharacter.cpp"
 #include "Item.cpp"
-#include "Room.cpp"
+#include "Player.cpp"
 #include "RNG.cpp"
+#include "Room.cpp"
+#include "Weapon.cpp"
 #include <iostream>
 
 /*
@@ -27,10 +29,11 @@ int main()
     // Main loop
     while (true) {
         // Set up the player
-        cout << "Welcome to our dungeon crawler! What is your name?\n";
+        cout << "The dungeon is dark and full of horrors. What is your name?\n";
         string playerName;
         cin >> playerName;
-        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10);
+        Weapon fists = Weapon("Fists", 1, 5, 0);
+        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, vector<Item *>({&fists}));
 
         /* The original setup
         // Set up the first room

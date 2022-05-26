@@ -24,3 +24,7 @@ void Armour::setEquipType(char type) {
     }
     throw type;
 }
+
+string Armour::getInfoStr() {
+    return name + ", HP: " + to_string(health) + ", DEF: " + to_string(defence);
+}

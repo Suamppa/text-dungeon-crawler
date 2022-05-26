@@ -113,8 +113,8 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     // Enemy creation and selection can be made fancier, this is just a mockup
     GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25);
     GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50);
-    Item sword = Item("Sword", 0, 20, 25, 1);
-    Item shield = Item("Shield", 0, 0, 0, 5);
+    Weapon sword = Weapon("Sword", 20, 25, 1);
+    Weapon shield = Weapon("Shield", 0, 0, 5);
     cout << "Enemy and item pools created" << endl;
 
     ShuffleBag<int> intPicker;
@@ -504,10 +504,7 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
 void Dungeon::handleLootActions(Room * room) {
     player.lootRoom(room);
     for (int i = 0; i < room->items.size(); i++) {
-        cout << "You open the chest and find a " << room->items[i].name
-        << " (HP: +" << room->items[i].health
-        << ", ATK: +" << room->items[i].minAttack << "-" << room->items[i].maxAttack
-        << ", DEF: +" << room->items[i].defence << ")!\n";
+        cout << "You open the chest and find a " << room->items[i].getInfoStr() << ")!\n";
     }
     room->clearLoot();
 }

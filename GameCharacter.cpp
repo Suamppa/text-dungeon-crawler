@@ -1,6 +1,6 @@
 #include "GameCharacter.h"
 
-GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, vector<Item> inv)
+GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, vector<Item *> inv)
 {
     name = n;
     maxHealth = h;
@@ -9,6 +9,7 @@ GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy
     maxAttack = maxa;
     defence = d;
     xpYield = xpy;
+    for (Item * item : inv) inventory.push_back(item);
 }
 
 int GameCharacter::takeDamage(int amount)

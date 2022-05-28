@@ -29,6 +29,24 @@
 Item::Item(string n)
 {
     name = n;
+    // setEquipType();
+    // equipped = false;
+}
+
+// void Item::setEquipType() {
+//     equipType = ' ';
+// }
+
+char Item::getEquipType() {
+    return ' ';
+}
+
+// void Item::setEquipState() {
+//     equipped = false;
+// }
+
+bool Item::getEquipState() {
+    return false;
 }
 
 string Item::getInfoStr() {

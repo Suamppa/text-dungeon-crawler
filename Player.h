@@ -10,7 +10,7 @@ public:
     Room * currentRoom;
     Room * previousRoom;
     int level, currentXp, maxXp;
-    Player(string="", int=0, int=0, int=0, int=0, int=0, int=0, int=0, vector<Item *> = vector<Item *>());
+    Player(string="", int=0, int=0, int=0, int=0, int=0, int=0, int=0, deque<Item *> = deque<Item *>());
     void addItem(Item *);
     // void addItem(Weapon);
     // void addItem(Armour);

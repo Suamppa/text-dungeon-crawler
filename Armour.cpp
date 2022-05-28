@@ -8,9 +8,9 @@ Armour::Armour(string n, int h, int d, char et): Item(n)
     catch(char except) {
         cout << "Armour equip type '" << except << "' is not valid.\n";
     }
-    name = n;
     health = h;
     defence = d;
+    equipped = false;
 }
 
 // Allowed types: 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet
@@ -23,6 +23,19 @@ void Armour::setEquipType(char type) {
         }
     }
     throw type;
+}
+
+// Types: 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet
+char Armour::getEquipType() {
+    return equipType;
+}
+
+void Armour::setEquipState(bool state) {
+    equipped = state;
+}
+
+bool Armour::getEquipState() {
+    return equipped;
 }
 
 string Armour::getInfoStr() {

@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d, vector<Item *> inv):
+Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d, deque<Item *> inv):
 GameCharacter(n, h, mina, maxa, d, cxp, inv)
 {
     level = lvl;
@@ -78,7 +78,10 @@ void Player::printInventory() {
     int inventorySize = inventory.size();
     cout << "Inventory:\n";
     for (int i = 0; i < inventorySize; i++) {
-        cout << i+1 << ". " << inventory.at(i)->getInfoStr() << "\n";
+        cout << i+1 << ". ";
+        if (inventory.at(i)->getEquipState()) cout << '[' << inventory.at(i)->getInfoStr() << ']';
+        else cout << inventory.at(i)->getInfoStr();
+        cout << "\n";
     }
     // for (vector<Item *>::iterator it = inventory.begin(); it != inventory.end(); it++) {
     //     cout << count << ". " << it.getInfoStr() << '\n';

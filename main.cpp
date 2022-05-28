@@ -6,6 +6,7 @@
 #include "RNG.cpp"
 #include "Room.cpp"
 #include "Weapon.cpp"
+#include <deque>
 #include <iostream>
 
 /*
@@ -33,7 +34,8 @@ int main()
         string playerName;
         cin >> playerName;
         Weapon fists = Weapon("Fists", 1, 5, 0);
-        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, vector<Item *>({&fists}));
+        Armour shirt = Armour("Shirt", 0, 1, 'u');
+        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, deque<Item *>({&fists, &fists, &shirt}));
 
         /* The original setup
         // Set up the first room

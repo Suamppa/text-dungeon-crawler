@@ -29,3 +29,15 @@ bool Weapon::getEquipState() {
 string Weapon::getInfoStr() {
     return name + ", ATK: " + to_string(minAttack) + '-' + to_string(maxAttack) + ", DEF: " + to_string(defence);
 }
+
+int Weapon::getMinAttack() {
+    return minAttack;
+}
+
+int Weapon::getMaxAttack() {
+    return maxAttack;
+}
+
+int Weapon::getDefence() {
+    return defence;
+}

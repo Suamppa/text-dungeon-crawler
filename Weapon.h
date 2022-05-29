@@ -8,14 +8,17 @@ class Weapon: public Item
 private:
     char equipType;
     bool equipped;
-public:
     int minAttack, maxAttack, defence;
+public:
     Weapon(string, int, int, int);
     void setEquipType();
     char getEquipType();
     void setEquipState(bool);
     bool getEquipState();
     string getInfoStr();
+    int getMinAttack();
+    int getMaxAttack();
+    int getDefence();
 };
 
 #endif

@@ -1,14 +1,23 @@
 #include "GameCharacter.h"
 
-GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, deque<Item *> inv)
+GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, deque<Item *> & inv)
 {
     name = n;
-    maxHealth = h;
-    currentHealth = h;
-    minAttack = mina;
-    maxAttack = maxa;
-    defence = d;
+    baseMaxHealth = h;
+    baseMinAttack = mina;
+    baseMaxAttack = maxa;
+    baseDefence = d;
     xpYield = xpy;
+    // equippedArmour = vector<Armour *>({equippedHead, equippedUpperBody, equippedHands, equippedLowerBody, equippedFeet});
+    // equippedWeapons = vector<Weapon *>({equippedRItem, equippedLItem});
+    // These need to be NULL to start
+    equippedHead = NULL;
+    equippedUpperBody = NULL;
+    equippedHands = NULL;
+    equippedLowerBody = NULL;
+    equippedFeet = NULL;
+    equippedRItem = NULL;
+    equippedLItem = NULL;
     int invToAdd = inv.size();
     Item * pItem;
     for (int i = 0; i < invToAdd; i++) {
@@ -23,19 +32,20 @@ GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy
         else if (equipType == 'w') {
             Weapon * pWeapon = static_cast<Weapon *>(inventory[i]);
             // Stat comparison to be implemented as additional logic for auto-equipping
-            if (equipRItem == NULL) equipWeapon(pWeapon);
-            else if (equipLItem == NULL) equipWeapon(pWeapon, false);
+            if (equippedRItem == NULL) equipWeapon(pWeapon);
+            else if (equippedLItem == NULL) equipWeapon(pWeapon, false);
         } else {
             Armour * pArmour = static_cast<Armour *>(inventory[i]);
             // Stat comparison to be implemented as logic for auto-equipping
             equipArmour(pArmour, equipType);
         }
     }
+    currentHealth = getMaxHealth();
 }
 
 int GameCharacter::takeDamage(int amount)
 {
-    int damage = amount - defence;
+    int damage = amount - getDefence();
     if (damage < 0) {
         damage = 0;
     }
@@ -50,60 +60,145 @@ bool GameCharacter::checkIsDead()
 
 void GameCharacter::equipArmour(Armour * piece, char equipType) {
     if (equipType == 't') {
-        if (equipHead != NULL) equipHead = unequipArmour(equipHead);
-        equipHead = piece;
+        if (equippedHead != NULL) equippedHead = unequipArmour(equippedHead);
+        equippedHead = piece;
     }
     else if (equipType == 'u') {
-        if (equipUpperBody != NULL) equipUpperBody = unequipArmour(equipUpperBody);
-        equipUpperBody = piece;
+        if (equippedUpperBody != NULL) equippedUpperBody = unequipArmour(equippedUpperBody);
+        equippedUpperBody = piece;
     }
     else if (equipType == 'h') {
-        if (equipHands != NULL) equipHands = unequipArmour(equipHands);
-        equipHands = piece;
+        if (equippedHands != NULL) equippedHands = unequipArmour(equippedHands);
+        equippedHands = piece;
     }
     else if (equipType == 'l') {
-        if (equipLowerBody != NULL) equipLowerBody = unequipArmour(equipLowerBody);
-        equipLowerBody = piece;
+        if (equippedLowerBody != NULL) equippedLowerBody = unequipArmour(equippedLowerBody);
+        equippedLowerBody = piece;
     }
     else if (equipType == 'f') {
-        if (equipFeet != NULL) equipFeet = unequipArmour(equipFeet);
-        equipFeet = piece;
+        if (equippedFeet != NULL) equippedFeet = unequipArmour(equippedFeet);
+        equippedFeet = piece;
     }
     piece->setEquipState(true);
-    updateStats(piece->health, 0, 0, piece->defence);
 }
 
 Armour * GameCharacter::unequipArmour(Armour * piece) {
-    updateStats(-piece->health, 0, 0, -piece->defence);
     piece->setEquipState(false);
     return NULL;
 }
 
-// Set bool equipRight = false to use equipLItem instead of equipRItem
+// Set bool equipRight = false to use equippedLItem instead of equippedRItem
 void GameCharacter::equipWeapon(Weapon * weapon, bool equipRight) {
     if (equipRight) {
-        if (equipRItem != NULL) equipRItem = unequipWeapon(equipRItem);
-        equipRItem = weapon;
+        if (equippedRItem != NULL) equippedRItem = unequipWeapon(equippedRItem);
+        equippedRItem = weapon;
     }
     else {
-        if (equipLItem != NULL) equipLItem = unequipWeapon(equipLItem);
-        equipLItem = weapon;
+        if (equippedLItem != NULL) equippedLItem = unequipWeapon(equippedLItem);
+        equippedLItem = weapon;
     }
     weapon->setEquipState(true);
-    updateStats(0, weapon->minAttack, weapon->maxAttack, weapon->defence);
 }
 
 Weapon * GameCharacter::unequipWeapon(Weapon * weapon) {
-    updateStats(0, -weapon->minAttack, -weapon->maxAttack, -weapon->defence);
     weapon->setEquipState(false);
     return NULL;
 }
 
 // Pass negative values to decrease stats
-void GameCharacter::updateStats(int maxHP, int mina, int maxa, int def) {
-    maxHealth += maxHP;
+void GameCharacter::updateBaseStats(int maxHP, int mina, int maxa, int def) {
+    baseMaxHealth += maxHP;
     currentHealth += maxHP;
-    minAttack += mina;
-    maxAttack += maxa;
-    defence += def;
+    baseMinAttack += mina;
+    baseMaxAttack += maxa;
+    baseDefence += def;
+}
+
+int GameCharacter::getMaxHealth() {
+    int total = baseMaxHealth;
+    int toAdd;
+    // This implementation requires getting into smart pointers
+    // int numArmourSlots = equippedArmour.size();
+    // for (int i = 0; i < numArmourSlots; i++) {
+    //     if (equippedArmour[i] != NULL) {
+    //         cout << "Value: " << equippedArmour[i]->health << endl;
+    //         total += equippedArmour.at(i)->health;
+    //     }
+    // }
+
+    if (equippedHead != NULL) {
+        toAdd = equippedHead->getHealth();
+        total += toAdd;
+    }
+    if (equippedUpperBody != NULL) {
+        toAdd = equippedUpperBody->getHealth();
+        total += toAdd;
+    }
+    if (equippedHands != NULL) {
+        toAdd = equippedHands->getHealth();
+        total += toAdd;
+    }
+    if (equippedLowerBody != NULL) {
+        toAdd = equippedLowerBody->getHealth();
+        total += toAdd;
+    }
+    if (equippedFeet != NULL) {
+        toAdd = equippedFeet->getHealth();
+        total += toAdd;
+    }
+    return total;
+}
+
+int GameCharacter::getDefence() {
+    int total = baseDefence;
+    // int numArmourSlots = equippedArmour.size();
+    // for (int i = 0; i < numArmourSlots; i++) {
+    //     if (equippedArmour[i] != NULL) total += equippedArmour[i]->defence;
+    // }
+
+    if (equippedHead != NULL) total += equippedHead->getDefence();
+    if (equippedUpperBody != NULL) total += equippedUpperBody->getDefence();
+    if (equippedHands != NULL) total += equippedHands->getDefence();
+    if (equippedLowerBody != NULL) total += equippedLowerBody->getDefence();
+    if (equippedFeet != NULL) total += equippedFeet->getDefence();
+    return total;
+}
+
+int GameCharacter::getMinAttack() {
+    int total = baseMinAttack;
+    // int numWeaponSlots = equippedWeapons.size();
+    // for (int i = 0; i < numWeaponSlots; i++) {
+    //     if (equippedWeapons[i] != NULL) total += equippedWeapons[i]->minAttack;
+    // }
+
+    if (equippedRItem != NULL) total += equippedRItem->getMinAttack();
+    if (equippedLItem != NULL) total += equippedLItem->getMinAttack();
+    return total;
+}
+
+int GameCharacter::getMaxAttack() {
+    int total = baseMaxAttack;
+    // int numWeaponSlots = equippedWeapons.size();
+    // for (int i = 0; i < numWeaponSlots; i++) {
+    //     if (equippedWeapons[i] != NULL) total += equippedWeapons[i]->maxAttack;
+    // }
+
+    if (equippedRItem != NULL) total += equippedRItem->getMaxAttack();
+    if (equippedLItem != NULL) total += equippedLItem->getMaxAttack();
+    return total;
+}
+
+GameCharacter::~GameCharacter() {
+    int inventorySize = inventory.size();
+    for (int i = 0; i < inventorySize; i++) {
+        delete inventory[i];
+    }
+    // int numArmourSlots = equippedArmour.size();
+    // for (int i = 0; i < numArmourSlots; i++) {
+    //     delete equippedArmour[i];
+    // }
+    // int numWeaponSlots = equippedWeapons.size();
+    // for (int i = 0; i < numWeaponSlots; i++) {
+    //     delete equippedWeapons[i];
+    // }
 }

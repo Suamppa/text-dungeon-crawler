@@ -41,3 +41,11 @@ bool Armour::getEquipState() {
 string Armour::getInfoStr() {
     return name + ", HP: " + to_string(health) + ", DEF: " + to_string(defence);
 }
+
+int Armour::getHealth() {
+    return health;
+}
+
+int Armour::getDefence() {
+    return defence;
+}

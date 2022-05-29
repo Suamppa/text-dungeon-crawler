@@ -10,7 +10,7 @@ using namespace std;
 class Dungeon
 {
 public:
-    Player player;
+    Player * player;
     // Holds the actual room data
     vector<vector<Room>> rooms;
     // Grid representing accessible rooms
@@ -19,7 +19,7 @@ public:
     vector<vector<char>> map;
     int numRooms, startY, startX, exitY, exitX, depth, dungeonHeight, dungeonWidth;
     bool revealMap;
-    Dungeon(Player);
+    Dungeon(Player *);
     // Checks if the argument 2D vector's index at (y, x) is reachable and returns a corresponding boolean value
     template <typename T>
     bool check2DBounds(vector<vector<T>> &, int, int);

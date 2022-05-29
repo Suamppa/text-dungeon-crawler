@@ -35,7 +35,8 @@ int main()
         cin >> playerName;
         Weapon fists = Weapon("Fists", 1, 5, 0);
         Armour shirt = Armour("Shirt", 0, 1, 'u');
-        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, deque<Item *>({&fists, &fists, &shirt}));
+        deque<Item *> playerItems = deque<Item *>({&fists, &fists, &shirt});
+        Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 
         /* The original setup
         // Set up the first room
@@ -66,7 +67,7 @@ int main()
         dungeon.rooms[3] = fourthRoom;
          */
 
-        Dungeon dungeon = Dungeon(player);
+        Dungeon dungeon = Dungeon(&player);
 
         int result = dungeon.runDungeon();
         if (result == 0) {

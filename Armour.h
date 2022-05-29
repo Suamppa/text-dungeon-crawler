@@ -8,8 +8,8 @@ class Armour: public Item
 private:
     char equipType;
     bool equipped;
-public:
     int health, defence;
+public:
     // Allowed types: 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet
     Armour(string, int, int, char);
     void setEquipType(char) noexcept(false);
@@ -17,6 +17,8 @@ public:
     void setEquipState(bool);
     bool getEquipState();
     string getInfoStr();
+    int getHealth();
+    int getDefence();
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "Dungeon.h"
 
-Dungeon::Dungeon(Player p)
+Dungeon::Dungeon(Player * p)
 {
     player = p;
     depth = 0;
@@ -111,8 +111,9 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     cout << "Starting room selected" << endl;
     
     // Enemy creation and selection can be made fancier, this is just a mockup
-    GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25);
-    GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50);
+    deque<Item *> noItems = deque<Item *>();
+    GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25, noItems);
+    GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50, noItems);
     Weapon sword = Weapon("Sword", 20, 25, 1);
     Weapon shield = Weapon("Shield", 0, 0, 5);
     cout << "Enemy and item pools created" << endl;
@@ -348,9 +349,9 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     }
 
     cout << "Setting player position" << endl;
-    player.currentRoom = &rooms[startY][startX];
-    player.previousRoom = &rooms[startY][startX];
-    player.currentRoom->visited = true;
+    player->currentRoom = &rooms[startY][startX];
+    player->previousRoom = &rooms[startY][startX];
+    player->currentRoom->visited = true;
     map[startY][startX] = 'O';
     cout << "Dungeon generation finished" << endl;
 }
@@ -432,18 +433,18 @@ void Dungeon::handleFightActions(GameCharacter * enemy) {
         char selection;
         selection = handleInput(numActions, actions, options);
         if (selection == 's') {
-            player.printStats();
+            player->printStats();
             continue;
         } else if (selection == 'i') {
-            player.printInventory();
+            player->printInventory();
             continue;
         } else if (selection == '1') {
-            int rawDamage = rng(player.minAttack, player.maxAttack);
+            int rawDamage = rng(player->getMinAttack(), player->getMaxAttack());
             int finalDamage = enemy->takeDamage(rawDamage);
             cout << "Your attack does " << finalDamage << " damage.\n";
         } else if (selection == '2') {
-            player.changeRooms(player.previousRoom);
-            enterRoom(player.currentRoom);
+            player->changeRooms(player->previousRoom);
+            enterRoom(player->currentRoom);
             return;
         } else {
             cout << "Invalid choice.\n";
@@ -453,18 +454,18 @@ void Dungeon::handleFightActions(GameCharacter * enemy) {
         if (enemy->checkIsDead()) {
             cout << "You win! You have defeated the " << enemy->name << ".\n";
             cout << "You gained " << enemy->xpYield << " XP.\n";
-            player.gainXp(enemy->xpYield);
-            player.currentRoom->clearEnemies();
+            player->gainXp(enemy->xpYield);
+            player->currentRoom->clearEnemies();
             return;
         }
         // handle enemy actions
-        int rawDamage = rng(enemy->minAttack, enemy->maxAttack);
-        int finalDamage = player.takeDamage(rawDamage);
+        int rawDamage = rng(enemy->getMinAttack(), enemy->getMaxAttack());
+        int finalDamage = player->takeDamage(rawDamage);
         cout << enemy->name << "'s attack does " << finalDamage << " damage.\n";
-        if (player.checkIsDead()) {
+        if (player->checkIsDead()) {
             return;
         }
-        cout << "You now have " << player.currentHealth << " health.\n";
+        cout << "You now have " << player->currentHealth << " health.\n";
     }
 }
 
@@ -482,18 +483,18 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
         char selection;
         selection = handleInput(numActions, actions, options);
         if (selection == 's') {
-            player.printStats();
+            player->printStats();
             continue;
         } else if (selection == 'i') {
-            player.printInventory();
+            player->printInventory();
             continue;
         } else if (selection == '1') {
             handleFightActions(&enemy);
             return;
         } else if (selection == '2') {
             cout << "You make a hasty retreat.\n";
-            player.changeRooms(player.previousRoom);
-            enterRoom(player.currentRoom);
+            player->changeRooms(player->previousRoom);
+            enterRoom(player->currentRoom);
             return;
         } else {
             cout << "Invalid choice.\n";
@@ -502,7 +503,7 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
 }
 
 void Dungeon::handleLootActions(Room * room) {
-    player.lootRoom(room);
+    player->lootRoom(room);
     for (int i = 0; i < room->items.size(); i++) {
         cout << "You open the chest and find a " << room->items[i].getInfoStr() << ")!\n";
     }
@@ -522,16 +523,16 @@ void Dungeon::handleRoomWithChest(Room * room) {
         char selection;
         selection = handleInput(numActions, actions, options);
         if (selection == 's') {
-            player.printStats();
+            player->printStats();
             continue;
         } else if (selection == 'i') {
-            player.printInventory();
+            player->printInventory();
             continue;
         } else if (selection == '1') {
             handleLootActions(room);
             return;
         } else if (selection == '2') {
-            handleMovementActions(player.currentRoom);
+            handleMovementActions(player->currentRoom);
             return;    
         } else {
             cout << "Invalid choice.\n";
@@ -552,14 +553,14 @@ void Dungeon::handleExitRoom(Room * room) {
         char selection;
         selection = handleInput(numActions, actions, options);
         if (selection == 's') {
-            player.printStats();
+            player->printStats();
             continue;
         } else if (selection == 'i') {
-            player.printInventory();
+            player->printInventory();
             continue;
         } else if (selection == '1') {
             int width, height, minRooms, maxRooms;
-            int modifier = depth + player.level;
+            int modifier = depth + player->level;
             width = rng(modifier + 2, modifier + 6);
             height = rng(modifier + 2, modifier + 6);
             minRooms = width * height / (modifier * 2);
@@ -578,7 +579,7 @@ void Dungeon::handleExitRoom(Room * room) {
             cout << "You descend deeper into the dungeon.\n";
             return;
         } else if (selection == '2') {
-            handleMovementActions(player.currentRoom);
+            handleMovementActions(player->currentRoom);
             return;
         } else {
             cout << "Invalid choice.\n";
@@ -598,13 +599,13 @@ void Dungeon::handleEmptyRoom(Room * room) {
         char selection;
         selection = handleInput(numActions, actions, options);
         if (selection == 's') {
-            player.printStats();
+            player->printStats();
             continue;
         } else if (selection == 'i') {
-            player.printInventory();
+            player->printInventory();
             continue;
         } else if (selection == '1') {
-            handleMovementActions(player.currentRoom);
+            handleMovementActions(player->currentRoom);
             return;
         } else {
             cout << "Invalid choice.\n";
@@ -652,7 +653,7 @@ void Dungeon::handleMovementActions(Room * room) {
     if (selection == 'c') return;
     for (int i = 0; i < numOptions; i++) {
         if (selection == options[i]) {
-            player.changeRooms(&rooms[adjacentRooms[i][0]][adjacentRooms[i][1]]);
+            player->changeRooms(&rooms[adjacentRooms[i][0]][adjacentRooms[i][1]]);
             cout << "You head " << actions[i].substr(5) << ".\n";
             return;
         }
@@ -798,9 +799,9 @@ int Dungeon::runDungeon() {
     cout << "You find yourself in an empty room. You have no idea how you got here.\n";
     while(true) {
         // enter room
-        enterRoom(player.currentRoom);
+        enterRoom(player->currentRoom);
         // check if dead
-        if (player.checkIsDead()) {
+        if (player->checkIsDead()) {
             cout << "You have died! Try again?\n";
             return performEndGameLogic();
         }

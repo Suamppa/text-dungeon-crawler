@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d, deque<Item *> inv):
+Player::Player(string n, int lvl, int cxp, int mxp, int h, int mina, int maxa, int d, deque<Item *> & inv):
 GameCharacter(n, h, mina, maxa, d, cxp, inv)
 {
     level = lvl;
@@ -10,13 +10,13 @@ GameCharacter(n, h, mina, maxa, d, cxp, inv)
     // addItem(fists);
 }
 
-void Player::increaseStats(int h, int mina, int maxa, int d) {
-    currentHealth += h;
-    maxHealth += h;
-    minAttack += mina;
-    maxAttack += maxa;
-    defence += d;
-}
+// void Player::increaseStats(int h, int mina, int maxa, int d) {
+//     currentHealth += h;
+//     baseMaxHealth += h;
+//     baseMinAttack += mina;
+//     baseMaxAttack += maxa;
+//     baseDefence += d;
+// }
 
 void Player::addItem(Item * item) {
     inventory.push_back(item);
@@ -46,7 +46,7 @@ void Player::levelUp(int oxp) {
     if (level > 8) {
         maxXp = (400 / 5 * pow(level, 3)) / 100;
     } else maxXp += 50;
-    increaseStats(5, 1, 1, 1);
+    updateBaseStats(5, 1, 1, 1);
     cout << "Level up! You are now level " << level << ".\n";
 }
 
@@ -67,9 +67,9 @@ void Player::printStats() {
     cout << name << "\n";
     cout << "Level: " << level << "\n";
     cout << "XP: " << currentXp << " / " << maxXp << "\n";
-    cout << "HP: " << currentHealth << " / " << maxHealth << "\n";
-    cout << "Attack: " << minAttack << "-" << maxAttack << "\n";
-    cout << "Defence: " << defence << "\n";
+    cout << "HP: " << currentHealth << " / " << getMaxHealth() << "\n";
+    cout << "Attack: " << getMinAttack() << "-" << getMaxAttack() << "\n";
+    cout << "Defence: " << getDefence() << "\n";
     cout << "\n";
 }
 

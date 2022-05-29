@@ -74,7 +74,6 @@ void Player::printStats() {
 }
 
 void Player::printInventory() {
-    int count = 1;
     int inventorySize = inventory.size();
     cout << "Inventory:\n";
     for (int i = 0; i < inventorySize; i++) {
@@ -83,9 +82,5 @@ void Player::printInventory() {
         else cout << inventory.at(i)->getInfoStr();
         cout << "\n";
     }
-    // for (vector<Item *>::iterator it = inventory.begin(); it != inventory.end(); it++) {
-    //     cout << count << ". " << it.getInfoStr() << '\n';
-    //     ++count;
-    // }
     cout << "\n";
 }

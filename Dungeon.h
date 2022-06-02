@@ -38,10 +38,10 @@ public:
     // Checks the argument room's type and calls the relevant function
     void enterRoom(Room *);
     // Handles user input. Takes an array of strings for printing.
-    char handleInput(int, string[], vector<char>, bool=true, bool=true);
+    char handleInput(int, string[], vector<char>, bool=true, bool=true, string="Choose an action:");
     // Handles user input. Takes a vector of strings for printing and
     // automatically labels the argument actions during printing with legalInputs.
-    char handleInput(vector<string>, vector<char> &, bool=true, bool=true, bool=false);
+    char handleInput(vector<string>, vector<char> &, bool=true, bool=true, bool=false, string="Choose an action:");
     // Logic for an empty room
     void handleEmptyRoom(Room *);
     // Logic for a room with a chest

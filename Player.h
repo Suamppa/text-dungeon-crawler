@@ -21,6 +21,10 @@ public:
     void changeRooms(Room *);
     void printStats();
     void printInventory();
+    void accessInventory();
+    void handleUseItem(Item *);
+    void handleUseItem(Weapon *);
+    void handleUseItem(Armour *);
 };
 
 #endif

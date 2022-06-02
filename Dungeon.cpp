@@ -356,24 +356,27 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     cout << "Dungeon generation finished" << endl;
 }
 
-char Dungeon::handleInput(int numActions, string actions[], vector<char> legalInputs, bool allowStats, bool allowInventory) {
+char Dungeon::handleInput(
+    int numActions, string actions[], vector<char> legalInputs,
+    bool allowStats, bool allowInventory, string header
+) {
+    string input;
+    char selection;
+    cout << header << "\n";
+    for (int i = 0; i < numActions; i++) {
+        cout << actions[i] << "\n";
+    }
+    if (allowStats) {
+        cout << "[S]tats\n";
+        legalInputs.push_back('s');
+        ++numActions;
+    }
+    if (allowInventory) {
+        cout << "[I]nventory\n";
+        legalInputs.push_back('i');
+        ++numActions;
+    }
     while (true) {
-        string input;
-        char selection;
-        cout << "Choose an action:\n";
-        for (int i = 0; i < numActions; i++) {
-            cout << actions[i] << "\n";
-        }
-        if (allowStats) {
-            cout << "[S]tats\n";
-            legalInputs.push_back('s');
-            ++numActions;
-        }
-        if (allowInventory) {
-            cout << "[I]nventory\n";
-            legalInputs.push_back('i');
-            ++numActions;
-        }
         cin >> input;
         selection = tolower(input.front());
         for (int i = 0; i < numActions; i++) {
@@ -385,11 +388,14 @@ char Dungeon::handleInput(int numActions, string actions[], vector<char> legalIn
     }
 }
 
-char Dungeon::handleInput(vector<string> actions, vector<char> & legalInputs, bool allowStats, bool allowInventory, bool allowCancel) {
+char Dungeon::handleInput(
+    vector<string> actions, vector<char> & legalInputs, bool allowStats,
+    bool allowInventory, bool allowCancel, string header
+) {
     string input;
     char selection;
     int numActions = legalInputs.size();
-    cout << "Choose an action:\n";
+    cout << header << "\n";
     for (int i = 0; i < numActions; i++) {
         cout << legalInputs[i] << ". " << actions[i] << "\n";
     }
@@ -486,7 +492,7 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
             player->printStats();
             continue;
         } else if (selection == 'i') {
-            player->printInventory();
+            player->accessInventory();
             continue;
         } else if (selection == '1') {
             handleFightActions(&enemy);
@@ -526,7 +532,7 @@ void Dungeon::handleRoomWithChest(Room * room) {
             player->printStats();
             continue;
         } else if (selection == 'i') {
-            player->printInventory();
+            player->accessInventory();
             continue;
         } else if (selection == '1') {
             handleLootActions(room);
@@ -556,7 +562,7 @@ void Dungeon::handleExitRoom(Room * room) {
             player->printStats();
             continue;
         } else if (selection == 'i') {
-            player->printInventory();
+            player->accessInventory();
             continue;
         } else if (selection == '1') {
             int width, height, minRooms, maxRooms;
@@ -602,7 +608,7 @@ void Dungeon::handleEmptyRoom(Room * room) {
             player->printStats();
             continue;
         } else if (selection == 'i') {
-            player->printInventory();
+            player->accessInventory();
             continue;
         } else if (selection == '1') {
             handleMovementActions(player->currentRoom);

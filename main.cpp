@@ -33,9 +33,12 @@ int main()
         cout << "The dungeon is dark and full of horrors. What is your name?\n";
         string playerName;
         cin >> playerName;
-        Weapon fists = Weapon("Fists", 1, 5, 0);
+        Weapon crackedDagger = Weapon("Cracked dagger", 1, 5, 0);
+        Weapon plank = Weapon("Wooden plank", 0, 0, 1);
         Armour shirt = Armour("Shirt", 0, 1, 'u');
-        deque<Item *> playerItems = deque<Item *>({&fists, &fists, &shirt});
+        // Tämä toteutus tarkoittaa, että jokainen esine on uniikki,
+        // eikä samaa esinettä voi käsitellä kahtena erillisenä kopiona.
+        deque<Item *> playerItems = deque<Item *>({&crackedDagger, &plank, &shirt});
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 
         /* The original setup

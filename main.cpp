@@ -27,6 +27,7 @@
 
 int main()
 {
+    deque<Item *> playerItems;
     // Main loop
     while (true) {
         // Set up the player
@@ -34,11 +35,12 @@ int main()
         string playerName;
         cin >> playerName;
         Weapon crackedDagger = Weapon("Cracked dagger", 1, 5, 0);
-        Weapon plank = Weapon("Wooden plank", 0, 0, 1);
+        // Weapon plank = Weapon("Wooden plank", 0, 0, 1);
         Armour shirt = Armour("Shirt", 0, 1, 'u');
         // Tämä toteutus tarkoittaa, että jokainen esine on uniikki,
         // eikä samaa esinettä voi käsitellä kahtena erillisenä kopiona.
-        deque<Item *> playerItems = deque<Item *>({&crackedDagger, &plank, &shirt});
+        // Nyt toimii?
+        playerItems = deque<Item *>({&crackedDagger, new Weapon(crackedDagger), &shirt});
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 
         /* The original setup
@@ -78,4 +80,5 @@ int main()
             break;
         }
     }
+    for (Item * pItem : playerItems) delete pItem;
 }

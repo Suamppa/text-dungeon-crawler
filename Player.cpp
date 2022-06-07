@@ -70,6 +70,21 @@ void Player::printStats() {
     cout << "HP: " << currentHealth << " / " << getMaxHealth() << '\n';
     cout << "Attack: " << getMinAttack() << "-" << getMaxAttack() << '\n';
     cout << "Defence: " << getDefence() << '\n';
+    cout << "\nEquipment:\n";
+    cout << "Right weapon: ";
+    equippedRItem == NULL ? cout << "None\n" : cout << equippedRItem->name << '\n';
+    cout << "Left weapon: ";
+    equippedLItem == NULL ? cout << "None\n" : cout << equippedLItem->name << '\n';
+    cout << "Head: ";
+    equippedHead == NULL ? cout << "None\n" : cout << equippedHead->name << '\n';
+    cout << "Upper body: ";
+    equippedUpperBody == NULL ? cout << "None\n" : cout << equippedUpperBody->name << '\n';
+    cout << "Lower body: ";
+    equippedLowerBody == NULL ? cout << "None\n" : cout << equippedLowerBody->name << '\n';
+    cout << "Hands: ";
+    equippedHands == NULL ? cout << "None\n" : cout << equippedHands->name << '\n';
+    cout << "Feet: ";
+    equippedFeet == NULL ? cout << "None\n" : cout << equippedFeet->name << '\n';
     cout << '\n';
 }
 
@@ -155,6 +170,9 @@ void Player::handleUseItem(Weapon * weapon) {
     vector<char> legalInputs;
     cout << weapon->getInfoStr() << '\n';
     if (weapon->getEquipState()) {
+        cout << "Equipped on the ";
+        weapon == equippedRItem ? cout << "right " : cout << "left ";
+        cout << "hand\n";
         // It's most likely more user-friendly to have a different key for unequipping to avoid accidents
         cout << "[U]nequip\n";
         legalInputs.push_back('u');

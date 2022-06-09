@@ -168,10 +168,20 @@ void Player::handleUseItem(Weapon * weapon) {
     string input;
     char selection;
     vector<char> legalInputs;
+    char unequipFrom;
     cout << weapon->getInfoStr() << '\n';
     if (weapon->getEquipState()) {
         cout << "Equipped on the ";
-        weapon == equippedRItem ? cout << "right " : cout << "left ";
+        if (weapon == equippedRItem) {
+            unequipFrom = 'R';
+            cout << "right ";
+        } else if (weapon == equippedLItem) {
+            unequipFrom = 'L';
+            cout << "left ";
+        } else {
+            unequipFrom = ' ';
+            cout << "\nERROR: Equip state and equipment mismatch.\n";
+        }
         cout << "hand\n";
         // It's most likely more user-friendly to have a different key for unequipping to avoid accidents
         cout << "[U]nequip\n";
@@ -200,7 +210,7 @@ void Player::handleUseItem(Weapon * weapon) {
                 } else if (selection == 'u') {
                     cout << weapon->name << " unequipped.\n";
                     // Tämä ei välttämättä toimi kuten pitäisi
-                    weapon = unequipWeapon(weapon);
+                    unequipItem(unequipFrom);
                     return;
                 }
             }
@@ -213,15 +223,25 @@ void Player::handleUseItem(Armour * piece) {
     string input;
     char selection, equipType;
     vector<char> legalInputs;
+    Armour * unequipFrom;
     cout << piece->getInfoStr() << '\n';
+    equipType = piece->getEquipType();
     if (piece->getEquipState()) {
+        if (equipType == 't') unequipFrom = equippedHead;
+        else if (equipType == 'u') unequipFrom = equippedUpperBody;
+        else if (equipType == 'h') unequipFrom = equippedHands;
+        else if (equipType == 'l') unequipFrom = equippedLowerBody;
+        else if (equipType == 'f') unequipFrom = equippedFeet;
+        else {
+            unequipFrom = NULL;
+            cout << "ERROR: Equip state and equipment mismatch.\n";
+        }
         // It's most likely more user-friendly to have a different key for unequipping to avoid accidents
         cout << "[U]nequip\n";
         legalInputs.push_back('u');
     } else {
         cout << "1. Equip\n";
         legalInputs.push_back('1');
-        equipType = piece->getEquipType();
     }
     cout << "[C]ancel\n";
     legalInputs.push_back('c');
@@ -236,8 +256,8 @@ void Player::handleUseItem(Armour * piece) {
                     cout << piece->name << " equipped.\n";
                     return;
                 } else if (selection == 'u') {
-                    cout << piece->name << " unequipped.\n";
-                    piece = unequipArmour(piece);
+                    cout << unequipFrom->name << " unequipped.\n";
+                    unequipItem(equipType);
                     return;
                 }
             }

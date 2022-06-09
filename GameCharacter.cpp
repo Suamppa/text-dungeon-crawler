@@ -59,50 +59,73 @@ bool GameCharacter::checkIsDead()
 }
 
 void GameCharacter::equipArmour(Armour * piece, char equipType) {
-    if (equipType == 't') {
-        if (equippedHead != NULL) equippedHead = unequipArmour(equippedHead);
-        equippedHead = piece;
-    }
-    else if (equipType == 'u') {
-        if (equippedUpperBody != NULL) equippedUpperBody = unequipArmour(equippedUpperBody);
+    if (equipType == 'u') {
+        if (equippedUpperBody != NULL) unequipItem(equipType);
         equippedUpperBody = piece;
-    }
-    else if (equipType == 'h') {
-        if (equippedHands != NULL) equippedHands = unequipArmour(equippedHands);
-        equippedHands = piece;
-    }
-    else if (equipType == 'l') {
-        if (equippedLowerBody != NULL) equippedLowerBody = unequipArmour(equippedLowerBody);
+    } else if (equipType == 'l') {
+        if (equippedLowerBody != NULL) unequipItem(equipType);
         equippedLowerBody = piece;
-    }
-    else if (equipType == 'f') {
-        if (equippedFeet != NULL) equippedFeet = unequipArmour(equippedFeet);
+    } else if (equipType == 't') {
+        if (equippedHead != NULL) unequipItem(equipType);
+        equippedHead = piece;
+    } else if (equipType == 'f') {
+        if (equippedFeet != NULL) unequipItem(equipType);
         equippedFeet = piece;
+    } else if (equipType == 'h') {
+        if (equippedHands != NULL) unequipItem(equipType);
+        equippedHands = piece;
     }
     piece->setEquipState(true);
 }
 
-Armour * GameCharacter::unequipArmour(Armour * piece) {
-    piece->setEquipState(false);
-    return NULL;
-}
+// void GameCharacter::unequipArmour(Armour * piece) {
+//     piece->setEquipState(false);
+//     piece = NULL;
+// }
 
 // Set bool equipRight = false to use equippedLItem instead of equippedRItem
 void GameCharacter::equipWeapon(Weapon * weapon, bool equipRight) {
     if (equipRight) {
-        if (equippedRItem != NULL) equippedRItem = unequipWeapon(equippedRItem);
+        if (equippedRItem != NULL) unequipItem('R');
         equippedRItem = weapon;
     }
     else {
-        if (equippedLItem != NULL) equippedLItem = unequipWeapon(equippedLItem);
+        if (equippedLItem != NULL) unequipItem('L');
         equippedLItem = weapon;
     }
     weapon->setEquipState(true);
 }
 
-Weapon * GameCharacter::unequipWeapon(Weapon * weapon) {
-    weapon->setEquipState(false);
-    return NULL;
+// void GameCharacter::unequipWeapon(Weapon * weapon) {
+//     weapon->setEquipState(false);
+//     weapon = NULL;
+// }
+
+// Item types: 'R' = right weapon, 'L' = left weapon,
+// 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet
+void GameCharacter::unequipItem(char itemType) {
+    if (itemType == 'R') {
+        equippedRItem->setEquipState(false);
+        equippedRItem = NULL;
+    } else if (itemType == 'L') {
+        equippedLItem->setEquipState(false);
+        equippedLItem = NULL;
+    } else if (itemType == 'u') {
+        equippedUpperBody->setEquipState(false);
+        equippedUpperBody = NULL;
+    } else if (itemType == 'l') {
+        equippedLowerBody->setEquipState(false);
+        equippedLowerBody = NULL;
+    } else if (itemType == 't') {
+        equippedHead->setEquipState(false);
+        equippedHead = NULL;
+    } else if (itemType == 'f') {
+        equippedFeet->setEquipState(false);
+        equippedFeet = NULL;
+    } else if (itemType == 'h') {
+        equippedHands->setEquipState(false);
+        equippedHands = NULL;
+    } else cout << "Invalid item type '" << itemType << '\'';
 }
 
 // Pass negative values to decrease stats

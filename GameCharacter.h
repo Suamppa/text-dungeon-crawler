@@ -19,13 +19,17 @@ public:
     Weapon * equippedRItem, * equippedLItem;
     // vector<Armour *> equippedArmour;
     // vector<Weapon *> equippedWeapons;
+    
     GameCharacter(string, int, int, int, int, int, deque<Item *> &);
     int takeDamage(int);
     bool checkIsDead();
     void equipArmour(Armour *, char);
-    Armour * unequipArmour(Armour *);
+    // void unequipArmour(Armour *);
+
     void equipWeapon(Weapon *, bool=true);
-    Weapon * unequipWeapon(Weapon *);
+    // void unequipWeapon(Weapon *);
+
+    void unequipItem(char);
     void updateBaseStats(int, int, int, int);
     int getMaxHealth();
     int getDefence();

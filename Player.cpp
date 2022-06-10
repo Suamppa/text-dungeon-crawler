@@ -104,57 +104,56 @@ void Player::printInventory() {
 // Prints the player inventory and enables item interaction
 void Player::accessInventory() {
     // Contains a specialised mini-version of Dungeon::handleInput
-    while (true) {
-        vector<char> legalInputs;
-        string input;
-        char selection;
-        bool backToTop;
-        int optionASCII = 48;
-        int inventorySize = inventory.size();
-        cout << "Inventory:\n";
-        for (int i = 0; i < inventorySize; i++) {
-            cout << i+1 << ". ";
-            if (inventory.at(i)->getEquipState()) cout << '[' << inventory.at(i)->getInfoStr() << ']';
-            else cout << inventory.at(i)->getInfoStr();
-            cout << '\n';
-            ++optionASCII;
-            legalInputs.push_back(optionASCII);
-        }
-        cout << "[C]ancel\n";
-        legalInputs.push_back('c');
-        while (true) {
-            backToTop = false;
-            cin >> input;
-            selection = tolower(input.front());
-            for (vector<char>::iterator it = legalInputs.begin(); it != legalInputs.end(); it++) {
-                if (*it == selection) {
-                    if (selection == 'c') return;
-                    else {
-                        int itemNum = (int) selection - 49;
-                        char equipType = inventory[itemNum]->getEquipType();
-                        if (equipType == ' ') {
-                            handleUseItem(inventory[itemNum]);
-                            backToTop = true;
-                            break;
-                        } else if (equipType == 'w') {
-                            Weapon * pWeapon = static_cast<Weapon *>(inventory[itemNum]);
-                            handleUseItem(pWeapon);
-                            backToTop = true;
-                            break;
-                        } else {
-                            Armour * pArmour = static_cast<Armour *>(inventory[itemNum]);
-                            handleUseItem(pArmour);
-                            backToTop = true;
-                            break;
-                        }
+    vector<char> legalInputs;
+    string input;
+    char selection;
+    bool validInput = false;
+    int optionASCII = 48;
+    int inventorySize = inventory.size();
+    cout << "Inventory:\n";
+    for (int i = 0; i < inventorySize; i++) {
+        cout << i+1 << ". ";
+        if (inventory.at(i)->getEquipState()) cout << '[' << inventory.at(i)->getInfoStr() << ']';
+        else cout << inventory.at(i)->getInfoStr();
+        cout << '\n';
+        ++optionASCII;
+        legalInputs.push_back(optionASCII);
+    }
+    cout << "[C]ancel\n";
+    legalInputs.push_back('c');
+    while (!validInput) {
+        cin >> input;
+        selection = tolower(input.front());
+        for (vector<char>::iterator it = legalInputs.begin(); it != legalInputs.end(); it++) {
+            if (*it == selection) {
+                if (selection == 'c') {
+                    cout << '\n';
+                    return;
+                } else {
+                    int itemNum = (int) selection - 49;
+                    char equipType = inventory[itemNum]->getEquipType();
+                    if (equipType == ' ') {
+                        handleUseItem(inventory[itemNum]);
+                        validInput = true;
+                        break;
+                    } else if (equipType == 'w') {
+                        Weapon * pWeapon = static_cast<Weapon *>(inventory[itemNum]);
+                        handleUseItem(pWeapon);
+                        validInput = true;
+                        break;
+                    } else {
+                        Armour * pArmour = static_cast<Armour *>(inventory[itemNum]);
+                        handleUseItem(pArmour);
+                        validInput = true;
+                        break;
                     }
                 }
             }
-            if (backToTop) break;
-            cout << "Invalid choice.\n";
         }
-    cout << '\n';
+        if (!validInput) cout << "Invalid choice.\n";
     }
+    cout << '\n';
+    accessInventory();
 }
 
 void Player::handleUseItem(Item * item) {
@@ -209,7 +208,6 @@ void Player::handleUseItem(Weapon * weapon) {
                     return;
                 } else if (selection == 'u') {
                     cout << weapon->name << " unequipped.\n";
-                    // Tämä ei välttämättä toimi kuten pitäisi
                     unequipItem(unequipFrom);
                     return;
                 }

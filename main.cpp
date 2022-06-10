@@ -23,6 +23,7 @@
  - HP:n palautuminen
  - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
  - Kunnon inventory
+ - Esinetietokanta tai vastaava
  */
 
 int main()
@@ -39,7 +40,8 @@ int main()
         Armour shirt = Armour("Shirt", 0, 1, 'u');
         // Tämä toteutus tarkoittaa, että jokainen esine on uniikki,
         // eikä samaa esinettä voi käsitellä kahtena erillisenä kopiona.
-        // Nyt toimii?
+        // Esineiden toteutus olisi hyvä ensiaskel tietokantoihin.
+        // Väliaikainen toteutus olkoon esineiden erillinen luominen tässä.
         playerItems = deque<Item *>({&crackedDagger, new Weapon(crackedDagger), &shirt});
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 

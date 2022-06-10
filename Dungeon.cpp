@@ -582,6 +582,7 @@ void Dungeon::handleExitRoom(Room * room) {
                 cout << endl;
             }
             
+            player->currentHealth = player->getMaxHealth();
             cout << "You descend deeper into the dungeon.\n";
             return;
         } else if (selection == '2') {

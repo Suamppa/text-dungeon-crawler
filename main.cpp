@@ -29,7 +29,6 @@
 
 int main()
 {
-    deque<Item *> playerItems;
     // Main loop
     while (true) {
         // Set up the player
@@ -46,7 +45,7 @@ int main()
         // Ongelma kopioiden käyttämisessä on, että ilman pointtereita kaikki esineet päätyvät
         // Item-tyyppiin ja alaluokkien ominaisuudet leikataan.
         // Yksi väliaikainen ratkaisu on antaa constructorille kaikki kolme esinetyyppiä omina vektoreinaan.
-        playerItems = deque<Item *>({new Weapon(crackedDagger), new Weapon(crackedDagger), new Armour(shirt)});
+        deque<Item *> playerItems = deque<Item *>({new Weapon(crackedDagger), new Weapon(crackedDagger), new Armour(shirt)});
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 
         /* The original setup
@@ -86,6 +85,4 @@ int main()
             break;
         }
     }
-    int numPlayerItems = playerItems.size();
-    for (int i = 0; i < numPlayerItems; i++) delete playerItems[i];
 }

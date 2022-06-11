@@ -19,11 +19,12 @@
  x "You enter the room..." viestit toistuvat turhan usein (vihollisen voittamisen jälkeen jne.)
  x Karttaominaisuus pelaajalle
  - Dungeon-vektoreiden vaihto deque-tyyppiin?
+ - Pair käyttöön dungeon-luonnissa
  - Iteraattorit käyttöön
  - HP:n palautuminen
  - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
  - Kunnon inventory
- - Esinetietokanta tai vastaava
+ - Esinetietokanta/-tiedosto tai vastaava
  */
 
 int main()
@@ -42,6 +43,9 @@ int main()
         // eikä samaa esinettä voi käsitellä kahtena erillisenä kopiona.
         // Esineiden toteutus olisi hyvä ensiaskel tietokantoihin.
         // Väliaikainen toteutus olkoon esineiden erillinen luominen tässä.
+        // Ongelma kopioiden käyttämisessä on, että ilman pointtereita kaikki esineet päätyvät
+        // Item-tyyppiin ja alaluokkien ominaisuudet leikataan.
+        // Yksi väliaikainen ratkaisu on antaa constructorille kaikki kolme esinetyyppiä omina vektoreinaan.
         playerItems = deque<Item *>({&crackedDagger, new Weapon(crackedDagger), &shirt});
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 

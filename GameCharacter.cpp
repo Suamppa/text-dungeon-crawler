@@ -24,7 +24,7 @@ GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy
         pItem = static_cast<Item *>(inv[i]);
         inventory.push_back(pItem);
     }
-    int inventorySize = inventory.size();
+    inventorySize = inventory.size();
     char equipType;
     for (int i = 0; i < inventorySize; i++) {
         equipType = inventory[i]->getEquipType();

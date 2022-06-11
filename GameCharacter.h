@@ -13,7 +13,7 @@ class GameCharacter
 {
 public:
     string name;
-    int baseMaxHealth, currentHealth, baseMinAttack, baseMaxAttack, baseDefence, xpYield;
+    int baseMaxHealth, currentHealth, baseMinAttack, baseMaxAttack, baseDefence, xpYield, inventorySize;
     deque<Item *> inventory;
     Armour * equippedHead, * equippedUpperBody, * equippedHands, * equippedLowerBody, * equippedFeet;
     Weapon * equippedRItem, * equippedLItem;

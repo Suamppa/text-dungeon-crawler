@@ -86,5 +86,6 @@ int main()
             break;
         }
     }
-    for (Item * pItem : playerItems) delete pItem;
+    int numPlayerItems = playerItems.size();
+    for (int i = 0; i < numPlayerItems; i++) delete playerItems[i];
 }

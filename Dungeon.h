@@ -12,7 +12,7 @@ class Dungeon
 public:
     Player * player;
     // Holds the actual room data
-    vector<vector<Room>> rooms;
+    vector<vector<Room *>> rooms;
     // Grid representing accessible rooms
     vector<vector<bool>> hasRoom;
     // Map of the dungeon, rooms represented by characters
@@ -30,7 +30,7 @@ public:
     // and adds 4 boolean values to saveToVec corresponding to the match
     void findAdjacentRooms(bool, int, int, vector<bool> &);
     // Adds a new Room object at position y,x on rooms and the character '0' to map
-    void addRoom(int, int, vector<Item> = vector<Item>(), vector<GameCharacter> = vector<GameCharacter>(), bool=false);
+    void addRoom(int, int, vector<Item *> &, vector<GameCharacter> = vector<GameCharacter>(), bool=false);
     // gridX and gridY must be greater than 1
     void generateDungeon(int, int, int, int);
     // Main gameplay loop

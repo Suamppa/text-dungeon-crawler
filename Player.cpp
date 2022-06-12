@@ -51,9 +51,13 @@ void Player::levelUp(int oxp) {
 }
 
 void Player::lootRoom(Room * room) {
-    vector<Item> items = room->items;
-    for (int i = 0; i < items.size(); i++) {
-        addItem(&items[i]);
+    int numItems = room->items.size();
+
+    // vector<Item *> items = room->items;
+    cout << "In Player::lootRoom: ";
+    for (int i = 0; i < numItems; i++) {
+        cout << room->items[i]->getInfoStr() << '\n';
+        addItem(room->items[i]);
     }
 }
 

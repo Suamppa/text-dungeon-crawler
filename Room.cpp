@@ -30,12 +30,23 @@
 //     // west = Wall(drawBox.draw());
 // } // Empty room constructor base
 
-Room::Room(int iy, int ix, bool ie, vector<Item> is, vector<GameCharacter> gcs)
+Room::Room() {
+    y = -1;
+    x = -1;
+    isExit = false;
+    items = vector<Item *>();
+    enemies = vector<GameCharacter>();
+    visited = false;
+}
+
+Room::Room(int iy, int ix, bool ie, vector<Item *> & is, vector<GameCharacter> gcs)
 {
+    if (is.size()) cout << "In Room constructor: " << is[0]->getInfoStr() << '\n';
     y = iy;
     x = ix;
     isExit = ie;
     items = is;
+    if (items.size()) cout << "After copy: " << items[0]->getInfoStr() << '\n';
     enemies = gcs;
     visited = false;
 }
@@ -103,4 +114,9 @@ void Room::clearLoot() {
 
 void Room::clearEnemies() {
     enemies.clear();
+}
+
+Room::~Room() {
+    int numItems = items.size();
+    for (int i = 0; i < numItems; i++) delete items[i];
 }

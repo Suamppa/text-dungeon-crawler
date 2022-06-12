@@ -184,6 +184,8 @@ int GameCharacter::getDefence() {
     if (equippedHands != NULL) total += equippedHands->getDefence();
     if (equippedLowerBody != NULL) total += equippedLowerBody->getDefence();
     if (equippedFeet != NULL) total += equippedFeet->getDefence();
+    if (equippedRItem != NULL) total += equippedRItem->getDefence();
+    if (equippedLItem != NULL) total += equippedLItem->getDefence();
     return total;
 }
 

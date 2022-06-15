@@ -20,6 +20,7 @@ GameCharacter(n, h, mina, maxa, d, cxp, inv)
 
 void Player::addItem(Item * item) {
     inventory.push_back(item);
+    inventorySize = inventory.size();
     // increaseStats(item.health, item.minAttack, item.maxAttack, item.defence);
 }
 
@@ -94,7 +95,6 @@ void Player::printStats() {
 
 // Simply prints the player inventory
 void Player::printInventory() {
-    int inventorySize = inventory.size();
     cout << "Inventory:\n";
     for (int i = 0; i < inventorySize; i++) {
         cout << i+1 << ". ";
@@ -113,7 +113,6 @@ void Player::accessInventory() {
     char selection;
     bool validInput = false;
     int optionASCII = 48;
-    int inventorySize = inventory.size();
     cout << "Inventory:\n";
     for (int i = 0; i < inventorySize; i++) {
         cout << i+1 << ". ";

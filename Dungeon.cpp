@@ -333,8 +333,8 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                 // Starting room is always empty
                 if ((i == startY) && (j == startX)) roomType = 0;
                 else {
-                    // intPicker.add({0, 1, 1, 1, 2}); // 0 = empty, 1 = enemy, 2 = loot
-                    intPicker.add(2);
+                    intPicker.add({0, 1, 1, 1, 2}); // 0 = empty, 1 = enemy, 2 = loot
+                    // intPicker.add(2);
                     roomType = intPicker.draw();
                     intPicker.empty();
                 }
@@ -837,7 +837,7 @@ int Dungeon::runDungeon() {
         for (int j = 0; j < dungeonWidth; j++) {
             cout << map[i][j] << ' ';
 
-            if (hasRoom[i][j] && i != startY && j != startX) {
+            if (hasRoom[i][j] && i != startY && j != startX && rooms[i][j]->items.size()) {
                 ey = i;
                 ex = j;
             }
@@ -858,5 +858,17 @@ int Dungeon::runDungeon() {
             cout << "You have died! Try again?\n";
             return performEndGameLogic();
         }
+    }
+}
+
+Dungeon::~Dungeon() {
+    if (numRooms) {
+        for (int i = 0; i < dungeonHeight; i++) {
+            for (int j = 0; j < dungeonWidth; j++) {
+                rooms[i][j]->~Room();
+                delete rooms[i][j];
+            }
+        }
+        rooms.clear();
     }
 }

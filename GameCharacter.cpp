@@ -214,7 +214,6 @@ int GameCharacter::getMaxAttack() {
 }
 
 GameCharacter::~GameCharacter() {
-    int inventorySize = inventory.size();
     for (int i = 0; i < inventorySize; i++) {
         delete inventory[i];
     }

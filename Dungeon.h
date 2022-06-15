@@ -62,6 +62,7 @@ public:
     void printMap(Room *, vector<vector<int>> &);
     // Upon player death, handles whether a new game is started or not based on user input
     bool performEndGameLogic();
+    ~Dungeon();
 };
 
 #endif

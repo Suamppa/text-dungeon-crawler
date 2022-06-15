@@ -117,6 +117,7 @@ void Room::clearEnemies() {
 }
 
 Room::~Room() {
-    int numItems = items.size();
-    for (int i = 0; i < numItems; i++) delete items[i];
+    items.clear();
+    // int numItems = items.size();
+    // for (int i = 0; i < numItems; i++) delete items[i];
 }

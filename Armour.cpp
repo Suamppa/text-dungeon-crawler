@@ -11,6 +11,7 @@ Armour::Armour(string n, int h, int d, char et): Item(n)
     health = h;
     defence = d;
     equipped = false;
+    statScore = health + defence;
 }
 
 // Allowed types: 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet
@@ -48,4 +49,8 @@ int Armour::getHealth() {
 
 int Armour::getDefence() {
     return defence;
+}
+
+int Armour::getStatScore() {
+    return statScore;
 }

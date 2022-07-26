@@ -10,16 +10,16 @@ using namespace std;
 class Dungeon
 {
 public:
-    Player * player;
+    unique_ptr<Player> player;
     // Holds the actual room data
-    vector<vector<Room *>> rooms;
+    vector<vector<unique_ptr<Room>>> rooms;
     // Grid representing accessible rooms
     vector<vector<bool>> hasRoom;
     // Map of the dungeon, rooms represented by characters
     vector<vector<char>> map;
     int numRooms, startY, startX, exitY, exitX, depth, dungeonHeight, dungeonWidth;
     bool revealMap;
-    Dungeon(Player *);
+    Dungeon(Player &);
     // Checks if the argument 2D vector's index at (y, x) is reachable and returns a corresponding boolean value
     template <typename T>
     bool check2DBounds(vector<vector<T>> &, int, int);
@@ -30,7 +30,7 @@ public:
     // and adds 4 boolean values to saveToVec corresponding to the match
     void findAdjacentRooms(bool, int, int, vector<bool> &);
     // Adds a new Room object at position y,x on rooms and the character '0' to map
-    void addRoom(int, int, vector<Item *> &, vector<GameCharacter> = vector<GameCharacter>(), bool=false);
+    void addRoom(int, int, vector<shared_ptr<Item>> &, vector<GameCharacter> = vector<GameCharacter>(), bool=false);
     // gridX and gridY must be greater than 1
     void generateDungeon(int, int, int, int);
     // Main gameplay loop
@@ -62,7 +62,7 @@ public:
     void printMap(Room *, vector<vector<int>> &);
     // Upon player death, handles whether a new game is started or not based on user input
     bool performEndGameLogic();
-    ~Dungeon();
+    // ~Dungeon();
 };
 
 #endif

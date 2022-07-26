@@ -4,6 +4,8 @@ Practice project based on and extended from the project created during the Zenva
 The branch "master" holds the latest stable version with no in-dev prototypes.
 In contrast, the original course project had just 4 hardcoded rooms and no RNG features. The original code as it was at the end of the course is not included in any of these versions uploaded to GitHub.
 
+_Any comments in Finnish are temporary personal notes._
+
 Some planned features (_roughly in this order_):
 - Printable player map (WIP)
 - Proper inventory and equip systems
@@ -16,4 +18,4 @@ Some planned features (_roughly in this order_):
 - Proper front end?
 
 ### Compiling
-For compiling I recommend using C++20 or newer, but some versions may still compile with older standards. I use GCC and (occasionally) Clang when testing.
+For compiling I recommend using GCC with C++20 or newer, but some versions may still compile with older standards. I use GCC and (occasionally) Clang when testing.

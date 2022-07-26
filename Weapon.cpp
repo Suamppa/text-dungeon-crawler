@@ -7,6 +7,7 @@ Weapon::Weapon(string n, int mina, int maxa, int d): Item(n)
     defence = d;
     setEquipType();
     equipped = false;
+    statScore = (minAttack + maxAttack) / 2 + defence;
 }
 
 void Weapon::setEquipType() {
@@ -40,4 +41,8 @@ int Weapon::getMaxAttack() {
 
 int Weapon::getDefence() {
     return defence;
+}
+
+int Weapon::getStatScore() {
+    return statScore;
 }

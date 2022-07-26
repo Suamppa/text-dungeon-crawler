@@ -1,8 +1,8 @@
 #include "Dungeon.h"
 
-Dungeon::Dungeon(Player * p)
+Dungeon::Dungeon(Player & p)
 {
-    player = p;
+    player = make_unique<Player>(p);
     depth = 0;
     revealMap = false;
 }
@@ -78,9 +78,9 @@ void Dungeon::findAdjacentRooms(bool isRoom, int iy, int ix, vector<bool> & save
     }
 }
 
-void Dungeon::addRoom(int y, int x, vector<Item *> & items, vector<GameCharacter> enemies, bool isExit) {
+void Dungeon::addRoom(int y, int x, vector<shared_ptr<Item>> & items, vector<GameCharacter> enemies, bool isExit) {
     if (items.size()) cout << "In addRoom: " << items[0]->getInfoStr() << '\n';
-    rooms[y][x] = new Room(y, x, isExit, items, enemies);
+    rooms[y][x] = make_unique<Room>(y, x, isExit, items, enemies);
     if (items.size()) cout << "After construction: " << rooms[y][x]->items.at(0)->getInfoStr() << '\n';
     map[y][x] = '0';
 }
@@ -93,16 +93,17 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     // 5. Repeat steps 2-4 up to until max number of rooms is reached
 
     cout << "Starting dungeon creation..." << endl;
-    if (numRooms) {
-        // Make sure the allocated memory is freed
-        for (int i = 0; i < dungeonHeight; i++) {
-            for (int j = 0; j < dungeonWidth; j++) {
-                rooms[i][j]->~Room();
-                delete rooms[i][j];
-            }
-        }
-        rooms.clear();
-    }
+    if (numRooms) rooms.clear();
+    // if (numRooms) {
+    //     // Make sure the allocated memory is freed
+    //     for (int i = 0; i < dungeonHeight; i++) {
+    //         for (int j = 0; j < dungeonWidth; j++) {
+    //             rooms[i][j]->~Room();
+    //             delete rooms[i][j];
+    //         }
+    //     }
+    //     rooms.clear();
+    // }
 
     ++depth;
     int gridSize = gridX * gridY;
@@ -124,18 +125,19 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     cout << "Starting room selected" << endl;
     
     // Enemy creation and selection can be made fancier, this is just a mockup
-    deque<Item *> noItems = deque<Item *>();
+    deque<shared_ptr<Item>> noItems = deque<shared_ptr<Item>>();
+    // Vihollisista myös pointtereita?
     GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25, noItems);
     GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50, noItems);
-    Weapon sword = Weapon("Sword", 20, 25, 1);
-    Weapon shield = Weapon("Shield", 0, 0, 5);
-    Armour ironHelmet = Armour("Iron helmet", 2, 2, 't');
+    shared_ptr<Weapon> sword = make_shared<Weapon>("Sword", 20, 25, 1);
+    shared_ptr<Weapon> shield = make_shared<Weapon>("Shield", 0, 0, 5);
+    shared_ptr<Armour> ironHelmet = make_shared<Armour>("Iron helmet", 2, 2, 't');
     cout << "Enemy and item pools created" << endl;
 
     ShuffleBag<int> intPicker;
     vector<GameCharacter> enemyPool = {littleMonster, littleMonster, littleMonster, bigMonster};
     int enemyPoolEnd = enemyPool.size() - 1;
-    vector<Item *> itemPool = {&sword, &shield, &ironHelmet};
+    vector<shared_ptr<Item>> itemPool = {sword, shield, ironHelmet};
     // vector<Item *> itemPool = {static_cast<Weapon *>(&sword), static_cast<Weapon *>(&shield), static_cast<Armour *>(&ironHelmet)};
     cout << itemPool[0]->getInfoStr() << '\n';
     int itemPoolEnd = itemPool.size() - 1;
@@ -143,7 +145,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     bool allowExit = false;
     bool isExit = false;
     vector<GameCharacter> roomEnemies;
-    vector<Item *> roomItems;
+    vector<shared_ptr<Item>> roomItems;
     // A vector for holding the indices of available adjacent free spaces
     vector<vector<int>> freeInds;
 
@@ -322,8 +324,16 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
 
     // Create the actual rooms
     cout << "Starting room generation" << endl;
-    Room emptyRoom = Room();
-    rooms = vector<vector<Room *>>(dungeonHeight, vector<Room *>(dungeonWidth, &emptyRoom));
+    // Room emptyRoom = Room();
+    for (int i = 0; i < dungeonHeight; i++) {
+        rooms.push_back(vector<unique_ptr<Room>>());
+        for (int j = 0; j < dungeonWidth; j++) {
+            rooms.at(i).push_back(make_unique<Room>());
+        }
+    }
+    cout << "rooms size: " << rooms.size() << 'x' << rooms.at(0).size() << '\n';
+    // vector<unique_ptr<Room>> initRooms(dungeonWidth, make_unique<Room>());
+    // rooms = vector<vector<unique_ptr<Room>>>(dungeonHeight, move(initRooms));
     map = vector<vector<char>>(dungeonHeight, vector<char>(dungeonWidth, ' '));
     for (int i = 0; i < dungeonHeight; i++) {
         for (int j = 0; j < dungeonWidth; j++) {
@@ -349,18 +359,19 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                     // Randomise item
                     intPicker.addRange(0, itemPoolEnd);
                     poolInd = intPicker.draw();
-                    char equipType = itemPool[poolInd]->getEquipType();
-                    cout << equipType << '\n';
-                    if (equipType == ' ') roomItems.push_back(new Item(*itemPool[poolInd]));
-                    else if (equipType == 'w') {
-                        Weapon * pWeapon = static_cast<Weapon *>(itemPool[poolInd]);
-                        roomItems.push_back(new Weapon(*pWeapon));
-                        cout << roomItems[0]->getInfoStr() << '\n';
-                    } else {
-                        Armour * pArmour = static_cast<Armour *>(itemPool[poolInd]);
-                        roomItems.push_back(new Armour(*pArmour));
-                        cout << roomItems[0]->getInfoStr() << '\n';
-                    }
+                    roomItems.push_back(itemPool[poolInd]);
+                    // char equipType = itemPool[poolInd]->getEquipType();
+                    // cout << equipType << '\n';
+                    // if (equipType == ' ') roomItems.push_back(itemPool[poolInd]);
+                    // else if (equipType == 'w') {
+                    //     Weapon * pWeapon = static_cast<Weapon *>(itemPool[poolInd]);
+                    //     roomItems.push_back(new Weapon(*pWeapon));
+                    //     cout << roomItems[0]->getInfoStr() << '\n';
+                    // } else {
+                    //     Armour * pArmour = static_cast<Armour *>(itemPool[poolInd]);
+                    //     roomItems.push_back(new Armour(*pArmour));
+                    //     cout << roomItems[0]->getInfoStr() << '\n';
+                    // }
                 }
                 addRoom(i, j, roomItems, roomEnemies);
                 cout << "Room added to [" << i << ',' << j << ']' << endl;
@@ -380,8 +391,8 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     }
 
     cout << "Setting player position" << endl;
-    player->currentRoom = rooms[startY][startX];
-    player->previousRoom = rooms[startY][startX];
+    player->currentRoom = rooms[startY][startX].get();
+    player->previousRoom = rooms[startY][startX].get();
     player->currentRoom->visited = true;
     map[startY][startX] = 'O';
     cout << "Dungeon generation finished" << endl;
@@ -507,10 +518,10 @@ void Dungeon::handleFightActions(GameCharacter * enemy) {
 }
 
 void Dungeon::handleRoomWithEnemy(Room * room) {
-    GameCharacter enemy = room->enemies.front();
-    cout << "You see a " << enemy.name << ".\n";
+    GameCharacter * pEnemy = &room->enemies.front();
+    cout << "You see a " << pEnemy->name << ".\n";
     string actions[] = {
-        "1. Fight the " + enemy.name,
+        "1. Fight the " + pEnemy->name,
         "2. Retreat to the previous room"
     };
     vector<char> options;
@@ -526,7 +537,7 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
             player->accessInventory();
             continue;
         } else if (selection == '1') {
-            handleFightActions(&enemy);
+            handleFightActions(pEnemy);
             return;
         } else if (selection == '2') {
             cout << "You make a hasty retreat.\n";
@@ -695,7 +706,7 @@ void Dungeon::handleMovementActions(Room * room) {
     if (selection == 'c') return;
     for (int i = 0; i < numOptions; i++) {
         if (selection == options[i]) {
-            player->changeRooms(rooms[adjacentRooms[i][0]][adjacentRooms[i][1]]);
+            player->changeRooms(rooms[adjacentRooms[i][0]][adjacentRooms[i][1]].get());
             cout << "You head " << actions[i].substr(5) << ".\n";
             return;
         }
@@ -776,7 +787,7 @@ void Dungeon::printMap(Room * room, vector<vector<int>> & adjacentRooms) {
         for (int j = 0; j < dungeonWidth; j++) {
             drawn = false;
             if (hasRoom[i][j]) {
-                if (rooms[i][j] == room) {
+                if (rooms[i][j].get() == room) {
                     mapToPrint.push_back('X');  // Player's current position
                     drawn = true;
                 }
@@ -830,24 +841,24 @@ int Dungeon::runDungeon() {
 
     generateDungeon(width, height, minRooms, maxRooms);
 
-    int ey, ex;
+    // int ey, ex;
 
     // Print the dungeon map for testing
     for (int i = 0; i < dungeonHeight; i++) {
         for (int j = 0; j < dungeonWidth; j++) {
             cout << map[i][j] << ' ';
 
-            if (hasRoom[i][j] && i != startY && j != startX && rooms[i][j]->items.size()) {
-                ey = i;
-                ex = j;
-            }
+            // if (hasRoom[i][j] && i != startY && j != startX && rooms[i][j]->items.size()) {
+            //     ey = i;
+            //     ex = j;
+            // }
 
         }
         cout << endl;
     }
 
-    cout << "Outside of the scope of generateDungeon\nExample item at " << ey << ", " << ex << ":\n";
-    cout << rooms[ey][ex]->items.at(0)->getInfoStr() << '\n';
+    // cout << "Outside of the scope of generateDungeon\nExample item at " << ey << ", " << ex << ":\n";
+    // cout << rooms[ey][ex]->items.at(0)->getInfoStr() << '\n';
 
     cout << "You find yourself in an empty room. You have no idea how you got here.\n";
     while(true) {
@@ -861,14 +872,14 @@ int Dungeon::runDungeon() {
     }
 }
 
-Dungeon::~Dungeon() {
-    if (numRooms) {
-        for (int i = 0; i < dungeonHeight; i++) {
-            for (int j = 0; j < dungeonWidth; j++) {
-                rooms[i][j]->~Room();
-                delete rooms[i][j];
-            }
-        }
-        rooms.clear();
-    }
-}
+// Dungeon::~Dungeon() {
+//     if (numRooms) {
+//         for (int i = 0; i < dungeonHeight; i++) {
+//             for (int j = 0; j < dungeonWidth; j++) {
+//                 rooms[i][j]->~Room();
+//                 delete rooms[i][j];
+//             }
+//         }
+//         rooms.clear();
+//     }
+// }

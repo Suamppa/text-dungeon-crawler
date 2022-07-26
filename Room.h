@@ -12,14 +12,14 @@ public:
     int y, x;
     bool isExit, visited;
     // Items and enemies are vectors for future implementations
-    vector<Item *> items;
+    vector<shared_ptr<Item>> items;
     vector<GameCharacter> enemies;
     Room();
-    Room(int, int, bool, vector<Item *> &, vector<GameCharacter> = vector<GameCharacter>());
+    Room(int, int, bool, vector<shared_ptr<Item>> &, vector<GameCharacter> = vector<GameCharacter>());
     // Room(int, bool=false, vector<Item> = vector<Item>(), vector<GameCharacter> = vector<GameCharacter>());
     void clearLoot();
     void clearEnemies();
-    ~Room();
+    // ~Room();
 };
 
 #endif

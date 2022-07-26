@@ -37,6 +37,7 @@ Item::Item(string n)
 //     equipType = ' ';
 // }
 
+// 'w' = weapon, 't' = top/head, 'u' = upper body, 'h' = hands/arms, 'l' = lower body, 'f' = feet, ' ' = generic item
 char Item::getEquipType() {
     return ' ';
 }
@@ -49,6 +50,30 @@ bool Item::getEquipState() {
     return false;
 }
 
+void Item::setEquipState(bool b) {
+    return;
+}
+
 string Item::getInfoStr() {
     return name;
+}
+
+int Item::getHealth() {
+    return 0;
+}
+
+int Item::getMinAttack() {
+    return 0;
+}
+
+int Item::getMaxAttack() {
+    return 0;
+}
+
+int Item::getDefence() {
+    return 0;
+}
+
+int Item::getStatScore() {
+    return 0;
 }

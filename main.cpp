@@ -8,6 +8,7 @@
 #include "Weapon.cpp"
 #include <deque>
 #include <iostream>
+#include <memory>
 
 /*
  TODO:
@@ -25,6 +26,7 @@
  - Estä vaikean vihollisen lisääminen ensimmäisiin huoneisiin
  - Kunnon inventory
  - Esinetietokanta/-tiedosto tai vastaava
+ - Karttaan erityismerkki huoneille, joissa on käyty, mutta joihin jäi vihollinen
  */
 
 int main()
@@ -35,9 +37,14 @@ int main()
         cout << "The dungeon is dark and full of horrors. What is your name?\n";
         string playerName;
         cin >> playerName;
-        Weapon crackedDagger = Weapon("Cracked dagger", 1, 5, 0);
+
+        // Weapon crackedDagger = Weapon("Cracked dagger", 1, 5, 0);
         // Weapon plank = Weapon("Wooden plank", 0, 0, 1);
-        Armour shirt = Armour("Shirt", 0, 1, 'u');
+        // Armour shirt = Armour("Shirt", 0, 1, 'u');
+        // unique_ptr<Item> pStartDagger1(new Weapon(crackedDagger));
+        // unique_ptr<Item> pStartDagger2(new Weapon(crackedDagger));
+        // unique_ptr<Item> pStartShirt(new Armour(shirt));
+
         // Tämä toteutus tarkoittaa, että jokainen esine on uniikki,
         // eikä samaa esinettä voi käsitellä kahtena erillisenä kopiona.
         // Esineiden toteutus olisi hyvä ensiaskel tietokantoihin.
@@ -45,7 +52,11 @@ int main()
         // Ongelma kopioiden käyttämisessä on, että ilman pointtereita kaikki esineet päätyvät
         // Item-tyyppiin ja alaluokkien ominaisuudet leikataan.
         // Yksi väliaikainen ratkaisu on antaa constructorille kaikki kolme esinetyyppiä omina vektoreinaan.
-        deque<Item *> playerItems = deque<Item *>({new Weapon(crackedDagger), new Weapon(crackedDagger), new Armour(shirt)});
+        // deque<unique_ptr<Item>> playerItems = deque<unique_ptr<Item>>({pStartDagger1, pStartDagger2, pStartShirt});
+        deque<shared_ptr<Item>> playerItems;
+        playerItems.push_back(make_shared<Weapon>("Cracked dagger", 1, 5, 0));
+        playerItems.push_back(make_shared<Weapon>("Cracked dagger", 1, 5, 0));
+        playerItems.push_back(make_shared<Armour>("Shirt", 0, 1, 'u'));
         Player player = Player(playerName, 1, 0, 50, 100, 15, 20, 10, playerItems);
 
         /* The original setup
@@ -77,7 +88,7 @@ int main()
         dungeon.rooms[3] = fourthRoom;
          */
 
-        Dungeon dungeon = Dungeon(&player);
+        Dungeon dungeon = Dungeon(player);
 
         int result = dungeon.runDungeon();
         if (result == 0) {

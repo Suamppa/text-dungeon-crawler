@@ -2,7 +2,8 @@
 
 Dungeon::Dungeon(Player & p)
 {
-    player = make_unique<Player>(p);
+    // player = make_unique<Player>(p);
+    player = &p;
     depth = 0;
     revealMap = false;
 }
@@ -375,6 +376,7 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
                 }
                 addRoom(i, j, roomItems, roomEnemies);
                 cout << "Room added to [" << i << ',' << j << ']' << endl;
+                if (roomItems.size()) cout << "Room has item " << rooms[i][j]->items.at(0)->getInfoStr() << '\n';
 
                 if ((i == exitY) && (j == exitX)) {
                     rooms[i][j]->isExit = true;
@@ -551,10 +553,10 @@ void Dungeon::handleRoomWithEnemy(Room * room) {
 }
 
 void Dungeon::handleLootActions(Room * room) {
-    player->lootRoom(room);
     for (int i = 0; i < room->items.size(); i++) {
         cout << "You open the chest and find a " << room->items[i]->getInfoStr() << "!\n";
     }
+    player->lootRoom(room);
     room->clearLoot();
 }
 

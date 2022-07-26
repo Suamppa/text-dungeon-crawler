@@ -10,7 +10,7 @@ using namespace std;
 class Dungeon
 {
 public:
-    unique_ptr<Player> player;
+    Player * player;
     // Holds the actual room data
     vector<vector<unique_ptr<Room>>> rooms;
     // Grid representing accessible rooms

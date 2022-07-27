@@ -133,15 +133,15 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     shared_ptr<Weapon> sword = make_shared<Weapon>("Sword", 20, 25, 1);
     shared_ptr<Weapon> shield = make_shared<Weapon>("Shield", 0, 0, 5);
     shared_ptr<Armour> ironHelmet = make_shared<Armour>("Iron helmet", 2, 2, 't');
-    cout << "Enemy and item pools created" << endl;
-
-    ShuffleBag<int> intPicker;
     vector<GameCharacter> enemyPool = {littleMonster, littleMonster, littleMonster, bigMonster};
     int enemyPoolEnd = enemyPool.size() - 1;
     vector<shared_ptr<Item>> itemPool = {sword, shield, ironHelmet};
     // vector<Item *> itemPool = {static_cast<Weapon *>(&sword), static_cast<Weapon *>(&shield), static_cast<Armour *>(&ironHelmet)};
     cout << itemPool[0]->getInfoStr() << '\n';
     int itemPoolEnd = itemPool.size() - 1;
+    cout << "Enemy and item pools created" << endl;
+
+    ShuffleBag<int> intPicker;
     int y, x, roomType, poolInd, nonExitOdds;
     bool allowExit = false;
     bool isExit = false;

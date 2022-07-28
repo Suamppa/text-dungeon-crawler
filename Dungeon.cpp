@@ -130,14 +130,26 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     // Vihollisista myös pointtereita?
     GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25, noItems);
     GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50, noItems);
-    shared_ptr<Weapon> sword = make_shared<Weapon>("Sword", 20, 25, 1);
-    shared_ptr<Weapon> shield = make_shared<Weapon>("Shield", 0, 0, 5);
-    shared_ptr<Armour> ironHelmet = make_shared<Armour>("Iron helmet", 2, 2, 't');
-    vector<GameCharacter> enemyPool = {littleMonster, littleMonster, littleMonster, bigMonster};
-    int enemyPoolEnd = enemyPool.size() - 1;
-    vector<shared_ptr<Item>> itemPool = {sword, shield, ironHelmet};
-    // vector<Item *> itemPool = {static_cast<Weapon *>(&sword), static_cast<Weapon *>(&shield), static_cast<Armour *>(&ironHelmet)};
+    // shared_ptr<Weapon> sword = make_shared<Weapon>("Sword", 20, 25, 1);
+    // shared_ptr<Weapon> shield = make_shared<Weapon>("Shield", 0, 0, 5);
+    // shared_ptr<Armour> ironHelmet = make_shared<Armour>("Iron helmet", 2, 2, 't');
+    Weapon sword = Weapon("Sword", 20, 25, 1);
+    Weapon shield = Weapon("Shield", 0, 0, 5);
+    Armour ironHelmet = Armour("Iron helmet", 2, 2, 't');
+    vector<GameCharacter> enemyPool = {
+        littleMonster,
+        littleMonster,
+        littleMonster,
+        bigMonster
+    };
+    // vector<shared_ptr<Item>> itemPool = {sword, shield, ironHelmet};
+    vector<shared_ptr<Item>> itemPool = {
+        make_shared<Weapon>(sword),
+        make_shared<Weapon>(shield),
+        make_shared<Armour>(ironHelmet)
+    };
     cout << itemPool[0]->getInfoStr() << '\n';
+    int enemyPoolEnd = enemyPool.size() - 1;
     int itemPoolEnd = itemPool.size() - 1;
     cout << "Enemy and item pools created" << endl;
 

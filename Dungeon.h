@@ -1,9 +1,9 @@
+#ifndef DUNGEON_H
+#define DUNGEON_H
+
 #include "Player.h"
 #include "RNG.h"
 #include <stdexcept>
-
-#ifndef DUNGEON_H
-#define DUNGEON_H
 
 using namespace std;
 

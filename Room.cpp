@@ -50,7 +50,10 @@ Room::Room(int iy, int ix, bool ie, vector<shared_ptr<Item>> & is, vector<GameCh
     // items = is;
     if (items.size()) cout << "After copy: " << items[0]->getInfoStr() << '\n';
     enemies = gcs;
+    int numEnemies = enemies.size();
+    if (numEnemies) for (int i = 0; i < numEnemies; i++) enemies.at(i).currentRoom = this;
     visited = false;
+    cout << "This room's address in constructor: " << this << '\n';
 }
 
 // Old Room constructor

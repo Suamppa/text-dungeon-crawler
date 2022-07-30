@@ -1,10 +1,10 @@
+#ifndef ROOM_H
+#define ROOM_H
+
 #include "Armour.h"
 #include "GameCharacter.h"
 #include "RNG.h"
 #include "Weapon.h"
-
-#ifndef ROOM_H
-#define ROOM_H
 
 class Room
 {

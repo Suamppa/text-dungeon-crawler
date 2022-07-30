@@ -32,6 +32,10 @@ void Player::addItem(shared_ptr<Item> & item) {
 //     inventory.push_back(armour);
 // }
 
+bool Player::checkIsDead() {
+    return currentHealth <= 0;
+}
+
 void Player::gainXp(int amount) {
     currentXp += amount;
     // int overflowXp = maxXp - currentXp;

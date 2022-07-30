@@ -1,7 +1,7 @@
-#include "Item.h"
-
 #ifndef ARMOUR_H
 #define ARMOUR_H
+
+#include "Item.h"
 
 class Armour: public Item
 {

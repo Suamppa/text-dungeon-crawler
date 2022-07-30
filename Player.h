@@ -1,8 +1,8 @@
-#include "Room.h"
-#include <cmath>
-
 #ifndef PLAYER_H
 #define PLAYER_H
+
+#include "Room.h"
+#include <cmath>
 
 class Player: public GameCharacter
 {
@@ -10,7 +10,6 @@ class Player: public GameCharacter
     // A helper function for printInventory and accessInventory
     // void findAndPrintEquipped(const int);
 public:
-    Room * currentRoom;
     Room * previousRoom;
     int level, currentXp, maxXp;
     Player(string, int, int, int, int, int, int, int, deque<shared_ptr<Item>> &);
@@ -19,6 +18,7 @@ public:
     // void addItem(Armour);
     // void increaseStats(int, int, int, int);
 
+    bool checkIsDead();
     void gainXp(int);
     void levelUp(int);
     void lootRoom(Room *);

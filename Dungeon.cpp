@@ -84,6 +84,7 @@ void Dungeon::addRoom(int y, int x, vector<shared_ptr<Item>> & items, vector<Gam
     rooms[y][x] = make_unique<Room>(y, x, isExit, items, enemies);
     if (items.size()) cout << "After construction: " << rooms[y][x]->items.at(0)->getInfoStr() << '\n';
     map[y][x] = '0';
+    cout << "This room's address in addRoom: " << rooms[y][x] << '\n';
 }
 
 void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) {
@@ -127,9 +128,12 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     
     // Enemy creation and selection can be made fancier, this is just a mockup
     deque<shared_ptr<Item>> noItems = deque<shared_ptr<Item>>();
+    deque<shared_ptr<Item>> goblinInv;
+    goblinInv.push_back(make_shared<Weapon>("Dagger", 3, 6, 0));
     // Vihollisista myös pointtereita?
     GameCharacter littleMonster = GameCharacter("Little Monster", 50, 15, 20, 5, 25, noItems);
     GameCharacter bigMonster = GameCharacter("Big Monster", 100, 25, 30, 10, 50, noItems);
+    GameCharacter goblin = GameCharacter("Goblin", 60, 15, 20, 7, 35, goblinInv);
     // shared_ptr<Weapon> sword = make_shared<Weapon>("Sword", 20, 25, 1);
     // shared_ptr<Weapon> shield = make_shared<Weapon>("Shield", 0, 0, 5);
     // shared_ptr<Armour> ironHelmet = make_shared<Armour>("Iron helmet", 2, 2, 't');
@@ -139,7 +143,8 @@ void Dungeon::generateDungeon(int gridX, int gridY, int minRooms, int maxRooms) 
     vector<GameCharacter> enemyPool = {
         littleMonster,
         littleMonster,
-        littleMonster,
+        goblin,
+        goblin,
         bigMonster
     };
     // vector<shared_ptr<Item>> itemPool = {sword, shield, ironHelmet};

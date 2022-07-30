@@ -1,12 +1,12 @@
+#ifndef RNG_H
+#define RNG_H
+
 #include <iostream>
 #include <algorithm>
 #include <random>
 #include <vector>
 #include <deque>
 #include <initializer_list>
-
-#ifndef RNG_H
-#define RNG_H
 
 using namespace std;
 

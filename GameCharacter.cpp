@@ -1,5 +1,7 @@
 #include "GameCharacter.h"
+#include "Room.h"
 
+// (name, health, min attack, max attack, defence, XP yield, inventory)
 GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy, deque<shared_ptr<Item>> & inv)
 {
     name = n;
@@ -47,6 +49,12 @@ GameCharacter::GameCharacter(string n, int h, int mina, int maxa, int d, int xpy
         // }
     }
     currentHealth = getMaxHealth();
+    cout << name << " constructed. Inventory:\n";
+    for (int i = 0; i < inventorySize; i++) {
+        if (inventory.at(i)->getEquipState()) cout << '[' << inventory.at(i)->getInfoStr() << "]\n";
+        else cout << inventory.at(i)->getInfoStr() << '\n';
+    }
+    cout << "End of inventory\n";
 }
 
 int GameCharacter::takeDamage(int amount)
@@ -61,7 +69,11 @@ int GameCharacter::takeDamage(int amount)
 
 bool GameCharacter::checkIsDead()
 {
-    return currentHealth <= 0;
+    if (currentHealth <= 0) {
+        dropItem();
+        return true;
+    }
+    return false;
 }
 
 // GameCharacter class' equipItem function is automated with no user input;
@@ -110,6 +122,39 @@ void GameCharacter::equipItem(shared_ptr<Item> & pToEquip) {
 void GameCharacter::unequipItem(Equipment unequipFrom) {
     unequipFrom.unequipItem();
 } // Individual unequip functions for each equipment slot may be more useful for outside calls?
+
+void GameCharacter::unequipAll() {
+    equippedRItem.unequipItem();
+    equippedLItem.unequipItem();
+    equippedHead.unequipItem();
+    equippedUpperBody.unequipItem();
+    equippedHands.unequipItem();
+    equippedLowerBody.unequipItem();
+    equippedFeet.unequipItem();
+}
+
+// Drops all items in inventory
+void GameCharacter::dropItem() {
+    unequipAll();
+    for (int i = 0; i < inventorySize; i++) currentRoom->items.push_back(move(inventory.at(i)));
+    inventory.clear();
+}
+
+// Drops the item stored at index in inventory into the GameCharacter's current room
+// void GameCharacter::dropItem(int index) {
+//     if (inventory.at(index)->getEquipState()) inventory.at(index)->getEquipSlot()->unequipItem();
+//     currentRoom->items.push_back(move(inventory.at(index)));
+//     deque<shared_ptr<Item>>::iterator it = inventory.begin() + index;
+//     inventory.erase(it);
+// }
+
+// Drops the item pointed to by iterator into the GameCharacter's current room
+// void GameCharacter::dropItem(deque<shared_ptr<Item>>::iterator it) {
+//     shared_ptr<Item> & pItem = *it;
+//     if (pItem->getEquipState()) pItem->getEquipSlot()->unequipItem();
+//     currentRoom->items.push_back(move(pItem));
+//     inventory.erase(it);
+// }
 
 // void GameCharacter::equipItem(unique_ptr<Item> & pItem, int index) {
 //     char equipType = pItem->getEquipType();
@@ -367,10 +412,12 @@ void GameCharacter::Equipment::equipItem(shared_ptr<Item> & pToEquip) {
     if (pItem != nullptr) unequipItem();
     pItem = pToEquip;
     pItem->setEquipState(true);
+    // pItem->setEquipped(this);
 }
 
 void GameCharacter::Equipment::unequipItem() {
     pItem->setEquipState(false);
+    // pItem->setEquipped();
     pItem.reset();
 }
 

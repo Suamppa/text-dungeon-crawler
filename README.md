@@ -1,3 +1,5 @@
+*This project predates my computer science studies and in just a few months I have already learned so much, especially about OOP, that at some point I will most likely go through this project and critique several parts of it as a learning exercise. Further development of this project is unlikely, but adapting it to a different one (e.g. in Unity) at some point is possible.*
+
 # text-dungeon-crawler
 Practice project based on and extended from the project created during the Zenva Academy course "Learn C++ by Making a Text-Based RPG [2020]".
 
